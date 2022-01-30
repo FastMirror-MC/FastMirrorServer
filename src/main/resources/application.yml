@@ -1,0 +1,11 @@
+server:
+  port: 80
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mcfastmirror
+    username: postgres
+    password: qzwxsaedc
+    driver-class-name: org.postgresql.Driver
+  servlet:
+    multipart:
+      max-file-size: -1
