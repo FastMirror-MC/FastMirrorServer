@@ -77,7 +77,7 @@
 ```json
 {
     "artifact":   "spigot-1.18.1-3413.jar",                     // 文件名，带后缀
-    "hash":       "862678eabf78c1fc309e4b9cd1c38515712e7ada",   // 文件校验码
+    "sha1":       "862678eabf78c1fc309e4b9cd1c38515712e7ada",   // 文件校验码
     "url":        "/download/..."                               // 下载url
 }
 ```
@@ -86,7 +86,7 @@
 以下只是说明下载文件的url的构造，不需要自己组装  
 计划使用nginx的secure_link模块来实现防盗链功能
 
-**url**: /download/jar?token=  
+**url**: /download/artifact?token=  
 **method**: GET  
 **bodyType**: octet-stream  
 
@@ -118,7 +118,7 @@ name - 核心名称
   | release    | bool   | 是否为正式版                       |
   | version    | string | 对应的mc版本                       |
   | updateTime | string | 核心更新的时间                     |
-  | hash       | string | 文件校验码，要求该校验码为原站提供 |
+  | sha1       | string | 文件校验码，要求该校验码为原站提供 |
   | file       | stream | 核心文件                           |
   
   **bodyType**: text

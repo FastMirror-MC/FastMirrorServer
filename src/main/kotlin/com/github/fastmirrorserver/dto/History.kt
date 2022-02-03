@@ -2,26 +2,48 @@ package com.github.fastmirrorserver.dto
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.github.fastmirrorserver.entity.Cores
-import com.github.fastmirrorserver.enums.CoreType
-import com.github.fastmirrorserver.enums.McVersion
 import com.github.fastmirrorserver.utc
-import org.ktorm.dsl.and
-import org.ktorm.dsl.inList
-import org.ktorm.expression.ScalarExpression
+import io.swagger.annotations.ApiModel
+import io.swagger.annotations.ApiModelProperty
 import java.time.LocalDateTime
+import javax.naming.LimitExceededException
 
 abstract class History {
-    data class Param(
-        val names: String,
-        val versions: String,
-        val offset: Int,
-        val limit: Int
+    @ApiModel(description = "核心历史数据请求")
+    class Param (
+        names: String,
+        versions: String,
+        offset: Int,
+        limit: Int = 25
     ) : IParams {
+        @ApiModelProperty(value = "核心名称，用逗号分隔", example = "")
+        val names: String
+        @ApiModelProperty(value = "核心版本，用逗号分隔，最多10个", example = "")
+        val versions: String
+        @ApiModelProperty(value = "分页偏移量", example = "0")
+        val offset: Int
+        @ApiModelProperty(value = "当前页数据数量，最多25个，默认25个", required = false, example = "25")
+        val limit: Int
+        companion object {
+            const val MAXIMUM_VERSION = 10
+        }
+        init {
+            this.names = names.lowercase()
+            this.versions = versions.lowercase()
+            this.offset = if(offset < 0) 0 else offset
+            this.limit = if(limit < 0 || limit > 25) 25 else limit
+        }
+
+        fun nameArray() = names.split(",")
+        fun versionArray (): List<String> {
+            val tmp = versions.split(",")
+            if(tmp.size > MAXIMUM_VERSION)
+                throw LimitExceededException("param `versions` up to ${Latest.Param.MAXIMUM_VERSION} version.")
+            return tmp
+        }
+
 //        private fun name(alias: Cores) = alias.name inList names.split(",").map { CoreType.get(it) }
 //        private fun version(alias: Cores) = alias.version inList versions.split(",").map { McVersion.get(it) }
-
-        public fun nameArray() = names.split(",").map { CoreType.get(it).name }.toTypedArray()
-        public fun versionArray() = versions.split(",").map { McVersion.get(it).name }.toTypedArray()
 
         override fun query(alias: Cores) = TODO()
     }
@@ -34,14 +56,14 @@ abstract class History {
         val release: Boolean
     ) : IResponse {
         constructor(
-            name: CoreType,
-            version: McVersion,
+            name: String,
+            version: String,
             builds: String,
             update: LocalDateTime,
             release: Boolean
         ) : this(
-            name = name.toString(),
-            version = version.toString(),
+            name = name,
+            version = version,
             builds = builds,
             update = utc(update),
             release = release

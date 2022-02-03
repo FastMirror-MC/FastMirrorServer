@@ -1,8 +1,6 @@
 package com.github.fastmirrorserver.service
 
 import com.github.fastmirrorserver.dto.History
-import com.github.fastmirrorserver.enums.CoreType
-import com.github.fastmirrorserver.enums.McVersion
 import org.ktorm.database.asIterable
 import org.ktorm.database.use
 import org.springframework.stereotype.Service
@@ -29,8 +27,8 @@ from (
 ) T
 where (T.vn between ? and ?) and T."name" in (${template(nl.size)}) and T."version" in (${template(vl.size)})
                 """).use { statement ->
-                statement.setInt(1, param.offset)
-                statement.setInt(2, param.offset + param.limit - 1)
+                statement.setInt(1, param.offset + 1)
+                statement.setInt(2, param.offset + param.limit)
                 // 这玩意儿太弱智了
                 var i = 2
                 for (x in nl) statement.setString(++i, x)
@@ -40,8 +38,8 @@ where (T.vn between ? and ?) and T."name" in (${template(nl.size)}) and T."versi
                 query.asIterable()
                     .map {
                     History.Response(
-                        name = CoreType.valueOf(it.getString(1)),
-                        version = McVersion.valueOf(it.getString(2)),
+                        name = it.getString(1),
+                        version = it.getString(2),
                         builds = it.getString(3),
                         update = it.getTimestamp(4).toLocalDateTime(),
                         release = it.getBoolean(5)

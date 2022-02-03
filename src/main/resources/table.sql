@@ -4,7 +4,7 @@ create table if not exists t_core (
     "build" varchar(8) not null,
     "release" boolean not null,
     "update" timestamp not null,
-    "hash" varchar(512) not null,
+    "sha1" varchar(512) not null,
     constraint t_core_pkey primary key ("name", "version", "build")
 );
 create table if not exists t_submit_log (

@@ -1,7 +1,5 @@
 package com.github.fastmirrorserver.dto
 
-import com.github.fastmirrorserver.enums.CoreType
-import com.github.fastmirrorserver.enums.McVersion
 import com.github.fastmirrorserver.utc
 import java.io.*
 import java.time.LocalDateTime
@@ -9,18 +7,18 @@ import java.util.concurrent.TimeoutException
 
 data class FileToken (
     private val path: File,
-    val hash: String,
+    val sha1: String,
     private val expiration: LocalDateTime?
     ) {
     constructor(
-        name: CoreType,
-        version: McVersion,
+        name: String,
+        version: String,
         build: String,
-        hash: String,
+        sha1: String,
         expiration: LocalDateTime? = null
     ) : this(
         File("./core/$name/$version/$name-$version-$build.jar"),
-        hash,
+        sha1,
         expiration
     )
 

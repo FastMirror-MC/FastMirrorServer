@@ -32,7 +32,7 @@ class SubmitService: QueryService<Submit, FileToken>() {
             name = entity.name,
             version = entity.version,
             build = entity.build,
-            hash = entity.hash
+            sha1 = entity.sha1
         )
     }
 }
