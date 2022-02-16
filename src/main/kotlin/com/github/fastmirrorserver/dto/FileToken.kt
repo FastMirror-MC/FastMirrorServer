@@ -11,13 +11,11 @@ data class FileToken (
     private val expiration: LocalDateTime?
     ) {
     constructor(
-        name: String,
-        version: String,
-        build: String,
+        path: String,
         sha1: String,
         expiration: LocalDateTime? = null
     ) : this(
-        File("./core/$name/$version/$name-$version-$build.jar"),
+        File(path),
         sha1,
         expiration
     )

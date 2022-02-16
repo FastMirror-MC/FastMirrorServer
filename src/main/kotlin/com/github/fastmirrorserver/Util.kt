@@ -15,6 +15,13 @@ val Database.submits get() = this.sequenceOf(SubmitLogs)
 
 private val UTC = ZoneId.of("UTC")
 
+private fun getFileExt(name: String) = when(name.lowercase()) {
+    "pocketmine" -> "phar"
+    else -> "jar"
+}
+
 private val zoneId: ZoneId = ZoneId.systemDefault()
 fun utc(dateTime: LocalDateTime) = dateTime.atZone(zoneId).format(DateTimeFormatter.ISO_INSTANT)!!
 fun utc(string: String): LocalDateTime = ZonedDateTime.parse(string).withZoneSameInstant(UTC).toLocalDateTime()
+fun getPath(name: String,version: String,coreVersion: String) =
+    "$name/$version/$name-$version-$coreVersion.${getFileExt(name)}"

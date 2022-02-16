@@ -24,7 +24,7 @@ class LatestService : QueryService<Latest.Param, Map<String, Map<String, Latest.
         val lastRelease = Cores.aliased("t2")
         val query = database.from(lastBuild)
             .leftJoin(lastRelease, on = (lastBuild.name eq lastRelease.name) and (lastBuild.version eq lastRelease.version))
-            .select(lastBuild.name, lastBuild.version, lastBuild.build, lastBuild.update, lastRelease.build, lastRelease.update)
+            .select(lastBuild.name, lastBuild.version, lastBuild.coreVersion, lastBuild.update, lastRelease.coreVersion, lastRelease.update)
             .where {
                 latest(lastBuild, release = false) and param.query(lastBuild) and
                 latest(lastRelease, release = true)  and param.query(lastRelease) and lastRelease.release

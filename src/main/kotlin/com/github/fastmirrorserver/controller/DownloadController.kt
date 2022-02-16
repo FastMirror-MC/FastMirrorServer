@@ -23,11 +23,11 @@ class DownloadController {
     lateinit var service: DownloadService
 
     @ApiOperation("获取下载链接")
-    @GetMapping("/{name}/{version}/{build}")
+    @GetMapping("/{name}/{version}/{coreVersion}")
     fun link(request: HttpServletRequest,
-             @PathVariable name: String, @PathVariable version: String, @PathVariable build: String
+             @PathVariable name: String, @PathVariable version: String, @PathVariable coreVersion: String
     ): Download.Response {
-        val param = Download.Param(name, version, build)
+        val param = Download.Param(name, version, coreVersion)
         try {
             return service.query(param)
         }catch (e: NullPointerException) {
@@ -40,12 +40,12 @@ class DownloadController {
         }
     }
 
-    @ApiOperation("下载文件")
     @GetMapping("/artifact")
     fun download(request: HttpServletRequest, response: HttpServletResponse,
                  @RequestParam("token") token: String) {
         val uri = request.requestURI
         try {
+            response.addHeader("Content-Disposition", "attachment;filename=${service.getFilename(token)}")
             service.download(token, response.outputStream)
         } catch (e: NullPointerException) {
             log.trace("invalid uri $uri", e)

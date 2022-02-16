@@ -26,8 +26,8 @@ abstract class Latest {
         @ApiModelProperty(value = "核心版本，用逗号分隔，最多10个，可用all表示全部", example = "")
         val versions: String
         init{
-            this.names = names.lowercase()
-            this.versions = versions.lowercase()
+            this.names = names
+            this.versions = versions
         }
 
         private fun queryName(alias: Cores): ScalarExpression<Boolean> {
@@ -52,40 +52,40 @@ abstract class Latest {
         @JsonIgnore
         val version: String,
         @ApiModelProperty("最新稳定版构建的构建号/版本号")
-        val latestReleaseBuilds: String,
+        val latestReleaseCoreVersion: String,
         @ApiModelProperty("最新稳定版构建的更新时间")
-        val latestReleaseUpdate: String,
+        val latestReleaseUpdateTime: String,
         @ApiModelProperty("最新构建的构建号/版本号")
-        val latestBuilds: String,
+        val latestCoreVersion: String,
         @ApiModelProperty("最新构建的更新时间")
-        val latestUpdate: String
+        val latestUpdateTime: String
     ) : IResponse {
         constructor(
             name: String,
             version: String,
-            latestReleaseBuilds: String?,
-            latestReleaseUpdate: LocalDateTime?,
-            latestBuilds: String,
-            latestUpdate: LocalDateTime
+            latestReleaseCoreVersion: String,
+            latestReleaseUpdateTime: LocalDateTime,
+            latestCoreVersion: String,
+            latestUpdateTime: LocalDateTime
         ) : this(
             name = name,
             version = version,
-            latestReleaseBuilds = latestReleaseBuilds ?: "",
-            latestReleaseUpdate = latestReleaseUpdate?.let { utc(it) } ?: "",
-            latestBuilds = latestBuilds,
-            latestUpdate = utc(latestUpdate)
+            latestReleaseCoreVersion = latestReleaseCoreVersion,
+            latestReleaseUpdateTime = utc(latestReleaseUpdateTime),
+            latestCoreVersion = latestCoreVersion,
+            latestUpdateTime = utc(latestUpdateTime)
         )
         constructor(
             it: QueryRowSet,
             build: Cores,
             release: Cores
         ) : this (
-            it[build.name]!!,
-            it[build.version]!!,
-            it[release.build],
-            it[release.update],
-            it[build.build]!!,
-            it[build.update]!!,
+            name = it[build.name]!!,
+            version = it[build.version]!!,
+            latestReleaseCoreVersion = it[release.coreVersion]!!,
+            latestReleaseUpdateTime = it[release.update]!!,
+            latestCoreVersion = it[build.coreVersion]!!,
+            latestUpdateTime = it[build.update]!!,
         )
     }
 }

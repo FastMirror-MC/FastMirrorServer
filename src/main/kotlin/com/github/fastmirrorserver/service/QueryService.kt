@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 abstract class QueryService<in P, out R> {
     @Autowired
     protected lateinit var database: Database
-    protected val ref = Cores.aliased("_ref_${this::class.java.name.lowercase()}")
+    protected val ref = Cores.aliased("_ref_${this::class.java.name}")
     protected val log: Logger = LoggerFactory.getLogger(this::class.java)
 
     abstract fun query(param: P): R

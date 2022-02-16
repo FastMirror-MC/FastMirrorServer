@@ -29,9 +29,7 @@ class SubmitService: QueryService<Submit, FileToken>() {
         database.cores.add(entity)
         database.submits.add(param.toSubmitLog())
         return FileToken(
-            name = entity.name,
-            version = entity.version,
-            build = entity.build,
+            path = entity.path,
             sha1 = entity.sha1
         )
     }

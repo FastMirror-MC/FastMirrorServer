@@ -16,8 +16,8 @@ import javax.servlet.http.HttpServletRequest
 
 @Api("服务端核心信息获取", description = "服务端核心信息获取")
 @RestController
-@RequestMapping("/serverjar")
-class ServerJarController {
+@RequestMapping("/api")
+class ApiController {
     @Autowired
     lateinit var latestService: LatestService
 

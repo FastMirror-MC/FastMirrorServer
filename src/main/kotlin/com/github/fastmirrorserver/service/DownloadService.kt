@@ -19,10 +19,14 @@ class DownloadService : QueryService<Download.Param, Download.Response>() {
     override fun query(param: Download.Param): Download.Response {
         return database.cores.find { param.query(Cores) }?.let {
             val signature = uuid
-            val token = FileToken(it.name, it.version, it.build, it.sha1, LocalDateTime.now().plusMinutes(10))
+            val token = FileToken(it.path, it.sha1, LocalDateTime.now().plusMinutes(10))
             cache[signature] = token
             Download.Response(token.artifact, token.sha1, "/download/artifact?token=$signature")
         } ?: throw NullPointerException()
+    }
+
+    fun getFilename(token: String): String {
+        return cache[token]!!.artifact
     }
 
     fun download(token: String, stream: OutputStream) {

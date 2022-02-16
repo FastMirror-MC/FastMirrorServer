@@ -21,7 +21,7 @@ class HistoryService : QueryService<History.Param,Map<String, Map<String, List<H
 
             //TODO 寻找可替代的sql语句或尝试实现row_number()...
             connection.prepareStatement("""
-select T."name", T."version", T.build, T.update, T.release
+select T."name", T."version", T."core_version", T.update, T.release
 from (
     select *, row_number() over (partition by "name", "version" order by "update" desc) vn from t_core
 ) T
@@ -40,7 +40,7 @@ where (T.vn between ? and ?) and T."name" in (${template(nl.size)}) and T."versi
                     History.Response(
                         name = it.getString(1),
                         version = it.getString(2),
-                        builds = it.getString(3),
+                        coreVersion = it.getString(3),
                         update = it.getTimestamp(4).toLocalDateTime(),
                         release = it.getBoolean(5)
                     )

@@ -28,8 +28,8 @@ abstract class History {
             const val MAXIMUM_VERSION = 10
         }
         init {
-            this.names = names.lowercase()
-            this.versions = versions.lowercase()
+            this.names = names
+            this.versions = versions
             this.offset = if(offset < 0) 0 else offset
             this.limit = if(limit < 0 || limit > 25) 25 else limit
         }
@@ -51,20 +51,20 @@ abstract class History {
     data class Response(
         @JsonIgnore val name: String,
         @JsonIgnore val version: String,
-        val builds: String,
+        val coreVersion: String,
         val update: String,
         val release: Boolean
     ) : IResponse {
         constructor(
             name: String,
             version: String,
-            builds: String,
+            coreVersion: String,
             update: LocalDateTime,
             release: Boolean
         ) : this(
             name = name,
             version = version,
-            builds = builds,
+            coreVersion = coreVersion,
             update = utc(update),
             release = release
         )

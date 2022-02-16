@@ -12,7 +12,7 @@ interface SubmitLog : Entity<SubmitLog> {
     var client: String
     var name: String
     var version: String
-    var build: String
+    var coreVersion: String
     var timestamp: LocalDateTime
 }
 
@@ -21,6 +21,6 @@ object SubmitLogs: Table<SubmitLog>("t_submit_log") {
     val client = varchar("client").bindTo { it.client }
     val name = varchar("name").bindTo { it.name }
     val version = varchar("version").bindTo { it.version }
-    val build = varchar("build").bindTo { it.build }
+    val coreVersion = varchar("core_version").bindTo { it.coreVersion }
     val timestamp = datetime("time").bindTo { it.timestamp }
 }

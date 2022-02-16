@@ -11,23 +11,23 @@ abstract class Download {
     class Param (
         name: String,
         version: String,
-        build: String,
+        coreVersion: String
     ): IParams {
         @ApiModelProperty("核心名")
         val name: String
         @ApiModelProperty("游戏版本")
         val version: String
-        @ApiModelProperty("核心构建号/版本号")
-        val build: String
+        @ApiModelProperty("核心版本号")
+        val coreVersion: String
         init {
-            this.name = name.lowercase()
-            this.version = version.lowercase()
-            this.build = build.lowercase()
+            this.name = name
+            this.version = version
+            this.coreVersion = coreVersion
         }
         override fun query(alias: Cores)
               = (alias.name eq name) and
                 (alias.version eq version) and
-                (alias.build eq build)
+                (alias.coreVersion eq coreVersion)
     }
 
     data class Response (

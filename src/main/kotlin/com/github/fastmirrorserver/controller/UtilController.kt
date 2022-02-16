@@ -36,7 +36,7 @@ class UtilController {
     @GetMapping("/versions/{name}")
     fun versionList(@PathVariable name: String): List<String> {
         return database.from(Cores).selectDistinct(Cores.version)
-            .where { Cores.name eq name.lowercase() }
+            .where { Cores.name eq name }
             .map { it[Cores.version]!! }
     }
 }
