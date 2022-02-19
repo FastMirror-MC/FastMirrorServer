@@ -10,7 +10,7 @@ open class ServiceException(
         errcode: Int,
         message: String,
         details: String,
-        url: String
+        url: String = ""
     ) : this(
         ApiError(
             status = status,

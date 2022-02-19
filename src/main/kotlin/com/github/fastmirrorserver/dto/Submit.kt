@@ -18,18 +18,15 @@ data class Submit(
     lateinit var token: String
     lateinit var clientId: String
     fun toEntity(): Core {
-        val n = this@Submit.name
-        val v = this@Submit.version
-        val c = this@Submit.coreVersion
         return Core{
-            this@Core.name = n
-            this@Core.version = v
-            this@Core.coreVersion = c
+            this@Core.name = this@Submit.name
+            this@Core.version = this@Submit.version
+            this@Core.coreVersion = this@Submit.coreVersion
             this@Core.build = this@Submit.build
             this@Core.update = utc(this@Submit.updateTime)
             this@Core.release = this@Submit.release
             this@Core.sha1 = this@Submit.sha1
-            this@Core.path = "./core/${getPath(n, v, c)}"
+            this@Core.path = "./core/${getPath(name, version, coreVersion)}"
         }
     }
 

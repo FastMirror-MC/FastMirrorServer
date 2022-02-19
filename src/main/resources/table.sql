@@ -17,3 +17,7 @@ create table if not exists t_submit_log (
     "core_version" varchar(31) not null,
     "time" timestamp not null
 );
+create table if not exists t_homepage (
+    "id" varchar(31) primary key,
+    "url" varchar(255) not null
+);

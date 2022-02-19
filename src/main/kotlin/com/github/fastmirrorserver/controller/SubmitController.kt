@@ -26,8 +26,7 @@ class SubmitController {
             e.printStackTrace()
             throw BadRequest(
                 errcode = 401,
-                message = "need more params",
-                url = "/submit"
+                message = "need more params"
             )
         }
 
@@ -37,14 +36,12 @@ class SubmitController {
             e.printStackTrace()
             throw Forbidden(
                 errcode = 402,
-                message = "the server already has the same resource",
-                url = "/submit"
+                message = "the server already has the same resource"
             )
         } catch (e: UnauthorizedException) {
             throw Unauthorized(
                 errcode = 403,
-                message = "unauthorized",
-                url = "/submit"
+                message = "unauthorized"
             )
         }
     }

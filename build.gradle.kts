@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.github.fastmirrorserver"
-version = "1.0-SNAPSHOT"
+version = "2.0.0"
 
 repositories {
     mavenCentral()

@@ -6,14 +6,18 @@ import com.github.fastmirrorserver.dto.Submit
 import com.github.fastmirrorserver.exception.Unauthorized
 import com.github.fastmirrorserver.exception.UnauthorizedException
 import com.github.fastmirrorserver.submits
+import org.ktorm.database.Database
 import org.ktorm.entity.add
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.io.File
 
 @Service
-class SubmitService: QueryService<Submit, FileToken>() {
+class SubmitService {
+    @Autowired
+    protected lateinit var database: Database
 //    @Value("\${token-file-path}")
     lateinit var tokenFilePath: String
 
@@ -23,7 +27,7 @@ class SubmitService: QueryService<Submit, FileToken>() {
             throw UnauthorizedException()
     }
 
-    override fun query(param: Submit): FileToken {
+    fun query(param: Submit): FileToken {
         verify(param.token)
         val entity = param.toEntity()
         database.cores.add(entity)

@@ -1,55 +1,28 @@
 package com.github.fastmirrorserver.service
 
-import com.github.fastmirrorserver.dto.History
-import org.ktorm.database.asIterable
-import org.ktorm.database.use
+import com.github.fastmirrorserver.cores
+import com.github.fastmirrorserver.dto.Detail
+import com.github.fastmirrorserver.entity.Cores
+import org.ktorm.database.Database
+import org.ktorm.dsl.*
+import org.ktorm.entity.*
+import org.ktorm.support.postgresql.ilike
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
-class HistoryService : QueryService<History.Param,Map<String, Map<String, List<History.Response>>>>() {
-    private fun template(len: Int): String {
-        val joiner = StringJoiner(", ")
-        for (i in 1 .. len) joiner.add("?")
-        return joiner.toString()
-    }
+class HistoryService {
+    @Autowired
+    protected lateinit var database: Database
 
-    override fun query(param: History.Param): Map<String, Map<String, List<History.Response>>> {
-        val query = database.useConnection { connection ->
-            val nl = param.nameArray()
-            val vl = param.versionArray()
-
-            //TODO 寻找可替代的sql语句或尝试实现row_number()...
-            connection.prepareStatement("""
-select T."name", T."version", T."core_version", T.update, T.release
-from (
-    select *, row_number() over (partition by "name", "version" order by "update" desc) vn from t_core
-) T
-where (T.vn between ? and ?) and T."name" in (${template(nl.size)}) and T."version" in (${template(vl.size)})
-                """).use { statement ->
-                statement.setInt(1, param.offset + 1)
-                statement.setInt(2, param.offset + param.limit)
-                // 这玩意儿太弱智了
-                var i = 2
-                for (x in nl) statement.setString(++i, x)
-                for (x in vl) statement.setString(++i, x)
-                println(statement)
-                val query = statement.executeQuery()
-                query.asIterable()
-                    .map {
-                    History.Response(
-                        name = it.getString(1),
-                        version = it.getString(2),
-                        coreVersion = it.getString(3),
-                        update = it.getTimestamp(4).toLocalDateTime(),
-                        release = it.getBoolean(5)
-                    )
-                }
-            }
-        }.groupBy { it.name }
-            .mapValues { entry ->
-                entry.value.groupBy { it.version }
-            }
-        return query
-    }
+    fun query(name: String, version: String, offset: Int, limit: Int)
+     = Detail(
+        offset = if(offset < 0) 0 else offset,
+        limit = if(limit > 25) 25 else if(limit <= 0) 1 else limit,
+        builds =  database.cores.filter { (Cores.name ilike name) and (Cores.version ilike version) }
+            .sortedBy { Cores.update.desc() }
+            .drop(offset).take(limit)
+            .map { Detail.ResponseUnit(it) },
+        count = database.cores.count { (it.name ilike name) and (it.version ilike version) }
+    )
 }

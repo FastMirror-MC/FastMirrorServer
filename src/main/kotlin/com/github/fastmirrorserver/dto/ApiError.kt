@@ -8,7 +8,7 @@ data class ApiError(
     val errcode: Int,
     val message: String,
     val details: String,
-    val url: String,
+    var url: String,
     private val timestamp: String = utc(LocalDateTime.now())
 ) {
     override fun toString(): String {
