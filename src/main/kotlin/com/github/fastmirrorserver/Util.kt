@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter
 
 val Database.cores get() = this.sequenceOf(Cores)
 val Database.submits get() = this.sequenceOf(SubmitLogs)
-val Database.projects get() = this.sequenceOf(Homepages)
+val Database.homepages get() = this.sequenceOf(Homepages)
 
 private val UTC = ZoneId.of("UTC")
 

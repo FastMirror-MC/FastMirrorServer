@@ -3,9 +3,8 @@ package com.github.fastmirrorserver.service
 import com.github.fastmirrorserver.cores
 import com.github.fastmirrorserver.dto.Detail
 import com.github.fastmirrorserver.entity.Cores
-import com.github.fastmirrorserver.entity.Homepage
 import com.github.fastmirrorserver.entity.Homepages
-import com.github.fastmirrorserver.projects
+import com.github.fastmirrorserver.homepages
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import org.ktorm.entity.find
@@ -24,15 +23,16 @@ class DetailsService {
     @Autowired
     lateinit var latest: LatestService
 
-    fun summary(): List<Homepage> {
-        return database.projects.query.map { Homepages.createEntity(it) }
-    }
+    fun summary() = database.homepages.query.map { Homepages.createEntity(it) }
 
-    fun versions(name: String): List<String> {
-        return database.from(Cores).selectDistinct(Cores.version)
-            .where { Cores.name ilike name }
-            .map { it[Cores.version]!! }
-    }
+    fun versions() = database.from(Cores).selectDistinct(Cores.name, Cores.version)
+        .map { it[Cores.name]!! to it[Cores.version]!! }
+        .groupBy { it.first }
+        .mapValues { entry -> entry.value.map { it.second } }
+
+    fun versions(name: String) = database.from(Cores).selectDistinct(Cores.version)
+        .where { Cores.name ilike name }
+        .map { it[Cores.version]!! }
 
     fun coreVersion(name: String, version: String, offset: Int, limit: Int)
         = history.query(name, version, if(offset < 0) 0 else offset, if(limit > 25) 25 else if(limit <= 0) 1 else limit)

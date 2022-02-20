@@ -21,6 +21,10 @@ class DetailsController {
     @GetMapping("")
     fun summary() = service.summary()
 
+    @ApiOperation("获取所有服务端支持的游戏列表")
+    @GetMapping("/all")
+    fun versions() = service.versions()
+
     @ApiOperation("获取服务端支持的游戏版本列表")
     @ApiImplicitParams(ApiImplicitParam(value = "服务端名称", name = "name", required = true, example = "Arclight"))
     @GetMapping("/{name}")

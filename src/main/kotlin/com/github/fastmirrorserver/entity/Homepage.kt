@@ -11,14 +11,18 @@ data class Homepage (
     @ApiModelProperty("服务端名称", example = "Arclight")
     val name: String,
     @ApiModelProperty("主页网址", example = "https://github.com/IzzelAliz/Arclight")
-    val url: String
+    val url: String,
+    @ApiModelProperty("服务端标签", example = "mod")
+    val tag: String
 )
 
 object Homepages : BaseTable<Homepage>("t_homepage") {
     val id = varchar("id").primaryKey()
     val url = varchar("url")
+    val tag = varchar("tag")
     override fun doCreateEntity(row: QueryRowSet, withReferences: Boolean) = Homepage(
         name = row[id]!!,
-        url = row[url]!!
+        url = row[url]!!,
+        tag = row[tag]!!
     )
 }

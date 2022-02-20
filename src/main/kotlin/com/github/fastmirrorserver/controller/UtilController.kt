@@ -1,13 +1,10 @@
 package com.github.fastmirrorserver.controller
 
-import com.github.fastmirrorserver.entity.Cores
 import com.github.fastmirrorserver.exception.NotFound
-import com.github.fastmirrorserver.projects
+import com.github.fastmirrorserver.homepages
 import io.swagger.annotations.Api
-import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiOperation
 import org.ktorm.database.Database
-import org.ktorm.dsl.*
 import org.ktorm.entity.find
 import org.ktorm.support.postgresql.ilike
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,7 +23,7 @@ class UtilController {
     @ApiOperation("获取所有可用的服务端")
     @GetMapping("/{name}/homepage")
     fun homepage(@PathVariable name: String)
-     = database.projects.find { it.id ilike name } ?: throw NotFound(
+     = database.homepages.find { it.id ilike name } ?: throw NotFound(
         errcode = 501,
         message = "server name `${name}` is not found."
     )
