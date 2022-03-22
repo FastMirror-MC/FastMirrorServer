@@ -36,7 +36,8 @@ class SubmitController {
             e.printStackTrace()
             throw Forbidden(
                 errcode = 402,
-                message = "the server already has the same resource"
+                message = "the server already has the same resource",
+                details = e.message ?: "no further information"
             )
         } catch (e: UnauthorizedException) {
             throw Unauthorized(
