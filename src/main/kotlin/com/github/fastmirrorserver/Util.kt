@@ -9,6 +9,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 val Database.cores get() = this.sequenceOf(Cores)
 val Database.submits get() = this.sequenceOf(SubmitLogs)
@@ -24,5 +25,6 @@ private fun getFileExt(name: String) = when(name.lowercase()) {
 private val zoneId: ZoneId = ZoneId.systemDefault()
 fun utc(dateTime: LocalDateTime) = dateTime.atZone(zoneId).format(DateTimeFormatter.ISO_INSTANT)!!
 fun utc(string: String): LocalDateTime = ZonedDateTime.parse(string).withZoneSameInstant(UTC).toLocalDateTime()
-fun getPath(name: String,version: String,coreVersion: String) =
+fun uuid() = UUID.randomUUID().toString().replace("-", "").uppercase()
+fun getPath(name: String, version: String, coreVersion: String) =
     "$name/$version/$name-$version-$coreVersion.${getFileExt(name)}"

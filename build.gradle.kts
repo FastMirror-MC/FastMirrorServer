@@ -19,9 +19,9 @@ dependencies {
 
     implementation("org.postgresql:postgresql:42.3.1")
 
-    implementation("org.springframework.boot:spring-boot-starter-jdbc:2.6.3")
-    implementation("org.springframework.boot:spring-boot-starter:2.6.3")
-    implementation("org.springframework.boot:spring-boot-starter-web:2.6.3")
+    implementation("org.springframework.boot:spring-boot-starter-jdbc:2.6.4")
+    implementation("org.springframework.boot:spring-boot-starter:2.6.4")
+    implementation("org.springframework.boot:spring-boot-starter-web:2.6.4")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
 
@@ -34,7 +34,7 @@ dependencies {
     implementation("io.springfox:springfox-swagger-ui:3.0.0")
 
     testImplementation(kotlin("test"))
-    testImplementation("org.springframework.boot:spring-boot-starter-test:2.6.3")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:2.6.4")
 }
 
 tasks.test {
