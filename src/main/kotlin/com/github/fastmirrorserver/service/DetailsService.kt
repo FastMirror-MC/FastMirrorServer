@@ -1,9 +1,9 @@
 package com.github.fastmirrorserver.service
 
 import com.github.fastmirrorserver.cores
-import com.github.fastmirrorserver.dto.Detail
+import com.github.fastmirrorserver.dto.CoreDetail
 import com.github.fastmirrorserver.entity.Cores
-import com.github.fastmirrorserver.entity.Homepages
+import com.github.fastmirrorserver.entity.Projects
 import com.github.fastmirrorserver.homepages
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
@@ -23,7 +23,7 @@ class DetailsService {
     @Autowired
     lateinit var latest: LatestService
 
-    fun summary() = database.homepages.query.map { Homepages.createEntity(it) }
+    fun summary() = database.homepages.query.map { Projects.createEntity(it) }
 
     fun versions() = database.from(Cores).selectDistinct(Cores.name, Cores.version)
         .map { it[Cores.name]!! to it[Cores.version]!! }
@@ -39,8 +39,8 @@ class DetailsService {
 
     fun artifact(name: String, version: String, coreVersion: String)
      = when(coreVersion) {
-         "latest" -> latest.query(name, version)
-         else -> Detail.ResponseUnit(database.cores.find { (it.name ilike name) and (it.version ilike version) and (it.coreVersion ilike coreVersion) }!!)
+        "latest" -> latest.query(name, version)
+        else -> CoreDetail.ResponseUnit(database.cores.find { (it.name ilike name) and (it.version ilike version) and (it.coreVersion ilike coreVersion) }!!)
      }
 
     fun download(name: String, version: String, coreVersion: String)

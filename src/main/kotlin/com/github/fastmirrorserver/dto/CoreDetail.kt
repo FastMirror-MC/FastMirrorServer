@@ -6,14 +6,14 @@ import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 
 @ApiModel(description = "核心信息 - 分页")
-data class Detail (
+data class CoreDetail(
     @ApiModelProperty("服务端构建列表")
     val builds: List<ResponseUnit>,
     val offset: Int,
     val limit: Int,
     @ApiModelProperty("总大小，即max(offset+limit)=count")
     val count: Int
-    ) {
+) {
     @ApiModel(description = "核心信息")
     data class ResponseUnit(
         @ApiModelProperty("服务端名称", example = "Arclight")

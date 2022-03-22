@@ -17,6 +17,6 @@ internal class PLatestServiceTest {
 //
 //    @Test
 //    fun test2() {
-//        println(mapper.writeValueAsString(historyService.query(Detail.Param("spigot", "1.18.1,1.18", 1, 3))))
+//        println(mapper.writeValueAsString(historyService.query(CoreDetail.Param("spigot", "1.18.1,1.18", 1, 3))))
 //    }
 }

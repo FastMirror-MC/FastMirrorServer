@@ -1,7 +1,7 @@
 package com.github.fastmirrorserver
 
 import com.github.fastmirrorserver.entity.Cores
-import com.github.fastmirrorserver.entity.Homepages
+import com.github.fastmirrorserver.entity.Projects
 import com.github.fastmirrorserver.entity.SubmitLogs
 import org.ktorm.database.Database
 import org.ktorm.entity.sequenceOf
@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter
 
 val Database.cores get() = this.sequenceOf(Cores)
 val Database.submits get() = this.sequenceOf(SubmitLogs)
-val Database.homepages get() = this.sequenceOf(Homepages)
+val Database.homepages get() = this.sequenceOf(Projects)
 
 private val UTC = ZoneId.of("UTC")
 

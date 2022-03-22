@@ -1,7 +1,7 @@
 package com.github.fastmirrorserver.service
 
 import com.github.fastmirrorserver.cores
-import com.github.fastmirrorserver.dto.Detail
+import com.github.fastmirrorserver.dto.CoreDetail
 import org.ktorm.database.Database
 import org.ktorm.dsl.and
 import org.ktorm.dsl.desc
@@ -16,6 +16,6 @@ class LatestService {
     @Autowired
     private lateinit var database: Database
 
-    fun query(name: String, version: String)
-     = Detail.ResponseUnit(database.cores.sortedBy { it.update.desc() }.first { (it.name ilike name) and (it.version ilike version) })
+    fun query(name: String, version: String) = CoreDetail.ResponseUnit(database.cores.sortedBy { it.update.desc() }
+        .first { (it.name ilike name) and (it.version ilike version) })
 }
