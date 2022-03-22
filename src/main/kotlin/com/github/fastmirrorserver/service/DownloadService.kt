@@ -5,6 +5,7 @@ import com.github.fastmirrorserver.dto.Download
 import com.github.fastmirrorserver.dto.FileToken
 import com.github.fastmirrorserver.entity.Cores
 import com.github.fastmirrorserver.utc
+import com.github.fastmirrorserver.uuid
 import org.ktorm.database.Database
 import org.ktorm.dsl.and
 import org.ktorm.entity.find
@@ -21,7 +22,7 @@ class DownloadService {
     protected lateinit var database: Database
     private final val cache = TreeMap<String, FileToken>()
 
-    private val uuid get() = UUID.randomUUID().toString().replace("-", "").uppercase()
+    private val uuid get() = uuid()
 
     fun query(name: String, version: String, coreVersion: String): Download {
         return database.cores.find {
