@@ -6,22 +6,14 @@
 
 | Class                | Method                                               | Http request                                          | Description                        |
 | -------------------- | ---------------------------------------------------- | ----------------------------------------------------- | ---------------------------------- |
-| *DetailsController*  | [**
-summary**](/#DetailsController-summary)           | GET** /api/v2                                         | 获取支持的服务端列表               |
-| *DetailsController*  | [**
-versions**](/#DetailsController-versions)         | GET** /api/v2/all                                     | 获取所有服务端支持的MC版本列表     |
-| *DetailsController*  | [**
-version**](/#DetailsController-version)           | GET** /api/v2/{name}                                  | 获取服务端支持的游戏版本列表       |
-| *DetailsController*  | [**
-coreVersions**](/#DetailsController-coreVersions) | GET** /api/v2/{name}/{version}                        | 获取获取对应游戏版本的构建信息列表 |
-| *DetailsController*  | [**
-artifact**](/#DetailsController-artifact)         | GET** /api/v2/{name}/{version}/{coreVersion}          | 获取指定核心信息                   |
-| *DetailsController*  | [**
-download**](/#DetailsController-download)         | GET** /api/v2/{name}/{version}/{coreVersion}/download | 获取核心下载所需信息               |
-| *DownloadController* | [**
-download**](/#DownloadController-download)        | GET** /download                                       | 用于下载文件和获取文件下载链接     |
-| *UtilController*     | [**
-homepage**](/#UtilController-homepage)            | GET** /{name}/homepage                                | 获取服务端官方主页                 |
+| *DetailsController*  | [**summary**](/#DetailsController-summary)           | GET** /api/v2                                         | 获取支持的服务端列表               |
+| *DetailsController*  | [**versions**](/#DetailsController-versions)         | GET** /api/v2/all                                     | 获取所有服务端支持的MC版本列表     |
+| *DetailsController*  | [**version**](/#DetailsController-version)           | GET** /api/v2/{name}                                  | 获取服务端支持的游戏版本列表       |
+| *DetailsController*  | [**coreVersions**](/#DetailsController-coreVersions) | GET** /api/v2/{name}/{version}                        | 获取获取对应游戏版本的构建信息列表 |
+| *DetailsController*  | [**artifact**](/#DetailsController-artifact)         | GET** /api/v2/{name}/{version}/{coreVersion}          | 获取指定核心信息                   |
+| *DetailsController*  | [**download**](/#DetailsController-download)         | GET** /api/v2/{name}/{version}/{coreVersion}/download | 获取核心下载所需信息               |
+| *DownloadController* | [**download**](/#DownloadController-download)        | GET** /download                                       | 用于下载文件和获取文件下载链接     |
+| *UtilController*     | [**homepage**](/#UtilController-homepage)            | GET** /{name}/homepage                                | 获取服务端官方主页                 |
 
 # 1. DetailsController
 
