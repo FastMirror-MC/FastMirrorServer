@@ -3,7 +3,6 @@ package com.github.fastmirrorserver.controller
 import com.github.fastmirrorserver.exception.Gone
 import com.github.fastmirrorserver.exception.NotFound
 import com.github.fastmirrorserver.service.DownloadService
-import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -13,7 +12,6 @@ import java.io.FileNotFoundException
 import java.util.concurrent.TimeoutException
 import javax.servlet.http.HttpServletResponse
 
-@Api("下载相关", description = "用于下载文件和获取文件下载链接", tags = ["download"])
 @RestController
 @RequestMapping("/download")
 class DownloadController {

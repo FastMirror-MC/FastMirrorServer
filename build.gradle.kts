@@ -29,10 +29,6 @@ dependencies {
     implementation("org.ktorm:ktorm-support-postgresql:3.4.1")
     implementation("org.ktorm:ktorm-jackson:3.4.1")
 
-    implementation("io.springfox:springfox-boot-starter:3.0.0")
-    implementation("io.springfox:springfox-swagger2:3.0.0")
-    implementation("io.springfox:springfox-swagger-ui:3.0.0")
-
     testImplementation(kotlin("test"))
     testImplementation("org.springframework.boot:spring-boot-starter-test:2.6.4")
 }
@@ -43,4 +39,9 @@ tasks.test {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
+}
+
+tasks.processResources {
+    val profile = System.getProperty("profile") ?: "pond"
+    filter<org.apache.tools.ant.filters.ReplaceTokens>("tokens" to mapOf("profile" to profile))
 }
