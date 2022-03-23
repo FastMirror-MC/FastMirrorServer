@@ -1,0 +1,45 @@
+name: FastMirrorServer CI
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version
+        required: true
+        type: string
+      version-suffix:
+        description: VersionSuffix
+        required: true
+        type: choice
+        options:
+          - release
+          - pre-release
+          - alpha
+          - beta
+        default: relase
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+      - name: Build
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: |
+            bootJar
+            -Dprofile=pond
+            -Dversion=${{ inputs.version }}
+            -Dversion_suffix=${{ inputs.version-suffix }}
+      - name: publish
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ inputs.version }}
+          release_name: ${{ inputs.version }}
+          prerelease: ${{ inputs.version-suffix != 'release' }}
+          draft: false

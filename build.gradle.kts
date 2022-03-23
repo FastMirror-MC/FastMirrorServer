@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.github.fastmirrorserver"
-version = "2.0.0"
+version = "unknown"
 
 repositories {
     mavenCentral()
@@ -44,4 +44,10 @@ tasks.withType<KotlinCompile> {
 tasks.processResources {
     val profile = System.getProperty("profile") ?: "pond"
     filter<org.apache.tools.ant.filters.ReplaceTokens>("tokens" to mapOf("profile" to profile))
+}
+
+tasks.bootJar {
+    val version = System.getProperty("version") ?: "unknown"
+    val suffix = System.getProperty("version_suffix") ?: "release"
+    project.version = "${version}-${suffix}"
 }
