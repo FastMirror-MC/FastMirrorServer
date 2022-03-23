@@ -36,7 +36,8 @@ jobs:
             -Dprofile=pond
             -Dversion=${{ github.event.inputs.version }}
             -Dversion_suffix=${{ github.event.inputs.version-suffix }}
-      - name: publish
+      - name: Create Release
+        id: create_release
         uses: actions/create-release@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -45,3 +46,13 @@ jobs:
           release_name: ${{ github.event.inputs.version }}
           prerelease: ${{ github.event.inputs.version-suffix != 'release' }}
           draft: false
+      - name: Upload Assets
+        uses: actions/upload-release-asset@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: build/libs/FastMirrorServer-${{ github.event.inputs.version }}-${{ github.event.inputs.version-suffix }}.jar
+          asset_name: FastMirrorServer.jar
+          asset_content_type: application/jar
+
