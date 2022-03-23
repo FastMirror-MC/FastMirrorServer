@@ -29,6 +29,8 @@ dependencies {
     implementation("org.ktorm:ktorm-support-postgresql:3.4.1")
     implementation("org.ktorm:ktorm-jackson:3.4.1")
 
+    implementation("org.springframework.boot:spring-boot-starter-data-redis:2.6.4")
+
     implementation("io.springfox:springfox-boot-starter:3.0.0")
     implementation("io.springfox:springfox-swagger2:3.0.0")
     implementation("io.springfox:springfox-swagger-ui:3.0.0")
