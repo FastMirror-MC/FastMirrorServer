@@ -7,7 +7,7 @@ data class RequestLimit(
 ) {
     companion object {
         const val MAX_TTL = 60
-        const val MAX_REQ = 10
+        const val MAX_REQ = 60
     }
 
     var remainRequestCount: Int = MAX_REQ
