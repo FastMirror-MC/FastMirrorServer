@@ -1,4 +1,4 @@
-name: FastMirrorServer CI
+name: CI Manual
 on:
   workflow_dispatch:
     inputs:
@@ -55,4 +55,3 @@ jobs:
           asset_path: build/libs/FastMirrorServer-${{ github.event.inputs.version }}-${{ github.event.inputs.version-suffix }}.jar
           asset_name: FastMirrorServer.jar
           asset_content_type: application/jar
-
