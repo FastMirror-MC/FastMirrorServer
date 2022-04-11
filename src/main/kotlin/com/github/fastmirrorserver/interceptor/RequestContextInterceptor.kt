@@ -18,8 +18,11 @@ class RequestContextInterceptor : HandlerInterceptor {
     private lateinit var service: RequestLimitService
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         if (!super.preHandle(request, response, handler)) return false
-        log.info("${request.remoteAddr}:${request.remotePort} send a ${request.method} request to ${request.requestURI}")
-        val limit = service.get(request.remoteAddr, request.getHeader("x-ratelimit-session"))
+        val remoteAddr = request.getHeader("x-real-ip") ?: request.getHeader("remote-host") ?: request.remoteAddr
+        log.info("$remoteAddr send a ${request.method} request to ${request.requestURI}")
+        log.info("User-Agent: ${request.getHeader("user-agent")}")
+
+        val limit = service.get(remoteAddr, request.getHeader("x-ratelimit-session"))
         response.setHeader("x-ratelimit-session", limit.token)
         response.setIntHeader("x-ratelimit-limit", RequestLimit.MAX_REQ)
         response.setIntHeader("x-ratelimit-remaining", limit.remainRequestCount)
@@ -27,8 +30,17 @@ class RequestContextInterceptor : HandlerInterceptor {
         if (limit.canRequest) return true
         throw Forbidden(
             errcode = 1001,
-            message = "API rate limit exceeded for ${request.remoteAddr}",
+            message = "API rate limit exceeded for $remoteAddr",
             details = "Please reduce the frequency of access"
         )
+    }
+
+    override fun afterCompletion(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        handler: Any,
+        ex: Exception?
+    ) {
+        super.afterCompletion(request, response, handler, ex)
     }
 }
