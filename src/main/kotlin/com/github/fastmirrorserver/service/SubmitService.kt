@@ -3,7 +3,6 @@ package com.github.fastmirrorserver.service
 import com.github.fastmirrorserver.cores
 import com.github.fastmirrorserver.dto.FileToken
 import com.github.fastmirrorserver.dto.Submit
-import com.github.fastmirrorserver.exception.UnauthorizedException
 import com.github.fastmirrorserver.submits
 import org.ktorm.database.Database
 import org.ktorm.entity.add
@@ -24,7 +23,7 @@ class SubmitService {
     fun verify(token: String) {
         val localToken = File(tokenFilePath).readText().trim()
         if(token != localToken)
-            throw UnauthorizedException()
+            throw Exception()
     }
 
     fun query(param: Submit): FileToken {

@@ -1,0 +1,3 @@
+package com.github.fastmirrorserver.controller
+
+class AuthorizationController

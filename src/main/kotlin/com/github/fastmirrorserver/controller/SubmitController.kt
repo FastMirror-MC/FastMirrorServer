@@ -3,8 +3,6 @@ package com.github.fastmirrorserver.controller
 import com.github.fastmirrorserver.dto.Submit
 import com.github.fastmirrorserver.exception.BadRequest
 import com.github.fastmirrorserver.exception.Forbidden
-import com.github.fastmirrorserver.exception.Unauthorized
-import com.github.fastmirrorserver.exception.UnauthorizedException
 import com.github.fastmirrorserver.service.SubmitService
 import org.postgresql.util.PSQLException
 import org.springframework.beans.factory.annotation.Autowired
@@ -38,11 +36,6 @@ class SubmitController {
                 errcode = 402,
                 message = "the server already has the same resource",
                 details = e.message ?: "no further information"
-            )
-        } catch (e: UnauthorizedException) {
-            throw Unauthorized(
-                errcode = 403,
-                message = "unauthorized"
             )
         }
     }

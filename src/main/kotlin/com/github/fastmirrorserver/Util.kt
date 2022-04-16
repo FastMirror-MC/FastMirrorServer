@@ -28,3 +28,4 @@ fun utc(string: String): LocalDateTime = ZonedDateTime.parse(string).withZoneSam
 fun uuid() = UUID.randomUUID().toString().replace("-", "").uppercase()
 fun getPath(name: String, version: String, coreVersion: String) =
     "$name/$version/$name-$version-$coreVersion.${getFileExt(name)}"
+fun timestamp() = System.currentTimeMillis() / 1000

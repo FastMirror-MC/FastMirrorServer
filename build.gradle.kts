@@ -19,18 +19,21 @@ dependencies {
 
     implementation("org.postgresql:postgresql:42.3.1")
 
-    implementation("org.springframework.boot:spring-boot-starter-jdbc:2.6.4")
-    implementation("org.springframework.boot:spring-boot-starter:2.6.4")
-    implementation("org.springframework.boot:spring-boot-starter-web:2.6.4")
+    implementation("org.springframework.boot:spring-boot-starter-jdbc:2.6.5")
+    implementation("org.springframework.boot:spring-boot-starter:2.6.5")
+    implementation("org.springframework.boot:spring-boot-starter-web:2.6.5")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.2")
+    implementation("com.auth0:java-jwt:3.19.1")
 
     implementation("org.ktorm:ktorm-core:3.4.1")
     implementation("org.ktorm:ktorm-support-postgresql:3.4.1")
     implementation("org.ktorm:ktorm-jackson:3.4.1")
 
     testImplementation(kotlin("test"))
-    testImplementation("org.springframework.boot:spring-boot-starter-test:2.6.4")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:2.6.5")
+
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 }
 
 tasks.test {
@@ -50,4 +53,8 @@ tasks.bootJar {
     val version = System.getProperty("version") ?: "unknown"
     val suffix = System.getProperty("version_suffix") ?: "release"
     project.version = "${version}-${suffix}"
+}
+
+tasks.compileJava {
+    inputs.files(tasks.processResources)
 }

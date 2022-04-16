@@ -1,5 +1,7 @@
 server:
   port: 80
+  auth:
+    jwt-secret-key: "U@A@V#cAFbFWU#aNesMVp9x#v`rSocT4eni@&WAp2ihgnv^`rMCQkYVQ~Zt~w`Rs"
 spring:
   profiles:
     active: @profile@
