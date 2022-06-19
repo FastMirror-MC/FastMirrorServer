@@ -1,6 +1,6 @@
 package com.github.fastmirrorserver.component
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.fastmirrorserver.Json
 import com.github.fastmirrorserver.timestamp
 import org.springframework.stereotype.Component
 
@@ -17,41 +17,63 @@ class MemoryCacheImpl : Cache {
             }
     }
 
-    private val mapper = ObjectMapper()
     private val pool = HashMap<String, U>()
 
     private fun adds(key: String, value: String, expire: Long)
-            = pool[key]?.let{ false } ?: let {
+    = pool[key]?.let{ false } ?: let {
         pool[key] = U(value, expire)
         true
     }
 
-
-    override fun <T> add(key: String, value: T): Boolean
-            = add(key, value, -1)
+    override fun <T> add(key: String, value: T, expire: Long): Boolean
+    = if(value!!::class.java == String::class.java)
+        adds(key, String::class.java.cast(value), expire)
+    else
+        adds(key, Json.serialization(value), expire)
 
     override fun <T> add(key: String, value: T, ttl: Int): Boolean
-            = add(key, value, ttl + timestamp())
+    = add(key, value, ttl + timestamp())
 
-    override fun <T> add(key: String, value: T, expire: Long): Boolean {
-        return if(value!!::class.java == String::class.java)
-            adds(key, String::class.java.cast(value), expire)
-        else
-            adds(key, mapper.writeValueAsString(value), expire)
+    override fun <T> add(key: String, value: T): Boolean
+    = add(key, value, -1L)
+
+    private fun updates(key: String, value: String, expire: Long): Boolean {
+        if(adds(key, value, expire)) return true
+        del(key)
+        return adds(key, value, expire)
     }
 
+    override fun <T> upd(key: String, value: T, expire: Long): Boolean
+    = if(value!!::class.java == String::class.java)
+        updates(key, String::class.java.cast(value), expire)
+    else
+        updates(key, Json.serialization(value), expire)
+
+    override fun <T> upd(key: String, value: T, ttl: Int): Boolean
+    = upd(key, value, ttl + timestamp())
+
+    override fun <T> upd(key: String, value: T): Boolean
+    = upd(key, value, -1L)
+
     override fun <T> get(key: String, type: Class<T>): T?
-     = get(key)?.let { mapper.readValue(it, type) }
+     = get(key)?.let { Json.deserialization(it, type) }
 
     override fun get(key: String)
-            = pool[key]?.let {
+    = pool[key]?.let {
         if(it.available)
-            it.value
+            it.value.ifEmpty { null }
         else {
             pool.remove(key)
             null
         }
     }
+
+    override fun has(key: String): Boolean = pool[key]?.let{
+        if(!it.available){
+            pool.remove(key)
+            false
+        } else true
+    } ?: false
 
     override fun del(key: String)
      = if(pool.containsKey(key)) {

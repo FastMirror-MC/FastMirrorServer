@@ -3,7 +3,7 @@ package com.github.fastmirrorserver.dto
 import com.github.fastmirrorserver.entity.Core
 import com.github.fastmirrorserver.utc
 
-data class CoreDetail(
+data class CoresDetail(
     val builds: List<ResponseUnit>,
     val offset: Int,
     val limit: Int,
@@ -14,7 +14,7 @@ data class CoreDetail(
         val version: String,
         val coreVersion: String,
         val update: String
-    ) : IResponse {
+    ) {
         constructor(o: Core) : this(
             name = o.name,
             version = o.version,

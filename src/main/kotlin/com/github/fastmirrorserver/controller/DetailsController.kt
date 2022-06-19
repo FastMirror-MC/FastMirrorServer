@@ -1,5 +1,6 @@
 package com.github.fastmirrorserver.controller
 
+import com.github.fastmirrorserver.ErrorCodes
 import com.github.fastmirrorserver.exception.NotFound
 import com.github.fastmirrorserver.service.DetailsService
 import org.springframework.beans.factory.annotation.Autowired
@@ -34,7 +35,7 @@ class DetailsController {
         service.artifact(name, version, coreVersion)
     } catch (e: NullPointerException) {
         throw NotFound(
-            errcode = 101,
+            errcode = ErrorCodes.Details.resource_not_found,
             message = "resource not found"
         )
     }

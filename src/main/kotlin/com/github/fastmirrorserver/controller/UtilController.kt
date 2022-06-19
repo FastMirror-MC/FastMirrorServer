@@ -1,5 +1,6 @@
 package com.github.fastmirrorserver.controller
 
+import com.github.fastmirrorserver.ErrorCodes
 import com.github.fastmirrorserver.exception.NotFound
 import com.github.fastmirrorserver.homepages
 import org.ktorm.database.Database
@@ -20,7 +21,7 @@ class UtilController {
     @GetMapping("/{name}/homepage")
     fun homepage(@PathVariable name: String)
      = database.homepages.find { it.id ilike name } ?: throw NotFound(
-        errcode = 501,
+        errcode = ErrorCodes.Details.homepage_not_found,
         message = "server name `${name}` is not found."
     )
 }

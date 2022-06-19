@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 
 data class ApiError(
     val status: Int,
-    val errcode: Int,
+    val errcode: String,
     val message: String,
     val details: String,
     var url: String,

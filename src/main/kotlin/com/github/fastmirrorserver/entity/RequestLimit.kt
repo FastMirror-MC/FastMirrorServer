@@ -1,5 +1,6 @@
 package com.github.fastmirrorserver.entity
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.github.fastmirrorserver.timestamp
 
 data class RequestLimit(
@@ -15,12 +16,14 @@ data class RequestLimit(
 
     private val lazyExpire = lazy { createTime + ttl }
 
+    @get:JsonIgnore
     val expire: Long
         get() = lazyExpire.value
 
     var remainRequestCount: Int = MAX_REQ
         private set(value) { field = if (value < 0) 0 else value }
 
+    @get:JsonIgnore
     val canRequest: Boolean
         get() = remainRequestCount --> 0
 }

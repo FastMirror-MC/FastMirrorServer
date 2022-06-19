@@ -30,10 +30,10 @@ class RequestLogInterceptor : HandlerInterceptor {
         log.info("Address: $addr")
         log.info("Timestamp: ${timestamp()}")
         log.info("Status: ${response.status}")
-        log.info("User-Agent: ${request.getHeader("user-agent")}")
-        log.info("X-Ratelimit-Session: ${request.getHeader("x-ratelimit-session")}")
-        log.info("X-Ratelimit-Limit: ${request.getHeader("x-ratelimit-limit")}")
-        log.info("X-Ratelimit-Remaining: ${request.getHeader("x-ratelimit-remaining")}")
-        log.info("X-Ratelimit-Reset: ${request.getHeader("x-ratelimit-reset")}")
+        request.getHeader("user-agent")?.let { log.info("User-Agent: $it") }
+        request.getHeader("x-ratelimit-session")?.let{ log.info("X-Ratelimit-Session: $it") }
+        request.getHeader("x-ratelimit-limit")?.let{ log.info("X-Ratelimit-Limit: $it") }
+        request.getHeader("x-ratelimit-remaining")?.let{ log.info("X-Ratelimit-Remaining: $") }
+        request.getHeader("x-ratelimit-reset")?.let { log.info("X-Ratelimit-Reset: $it") }
     }
 }

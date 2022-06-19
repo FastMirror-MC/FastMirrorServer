@@ -7,7 +7,7 @@ open class ServiceException(
     ): Exception() {
     constructor(
         status: Int,
-        errcode: Int,
+        errcode: String,
         message: String,
         details: String,
         url: String = ""

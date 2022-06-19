@@ -1,5 +1,6 @@
 package com.github.fastmirrorserver.interceptor
 
+import com.github.fastmirrorserver.ErrorCodes
 import com.github.fastmirrorserver.entity.RequestLimit
 import com.github.fastmirrorserver.exception.Forbidden
 import com.github.fastmirrorserver.service.RequestLimitService
@@ -24,9 +25,9 @@ class RequestLimitInterceptor : HandlerInterceptor {
         response.setHeader("x-ratelimit-reset", limit.expire.toString())
         if (limit.canRequest) return true
         throw Forbidden(
-            errcode = 1001,
+            errcode = ErrorCodes.Limit.maximum,
             message = "API rate limit exceeded for $remoteAddr",
-            details = "Please reduce the frequency of access"
+            details = "Please reduce the frequency of access_token"
         )
     }
 }

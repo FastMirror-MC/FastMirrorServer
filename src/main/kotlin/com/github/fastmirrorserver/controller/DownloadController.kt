@@ -1,5 +1,6 @@
 package com.github.fastmirrorserver.controller
 
+import com.github.fastmirrorserver.ErrorCodes
 import com.github.fastmirrorserver.exception.Gone
 import com.github.fastmirrorserver.exception.NotFound
 import com.github.fastmirrorserver.service.DownloadService
@@ -19,25 +20,26 @@ class DownloadController {
     lateinit var service: DownloadService
 
     @GetMapping("")
-    fun download(response: HttpServletResponse,
-                 @RequestParam("token") token: String) {
+    fun download(response: HttpServletResponse, @RequestParam("token") token: String) {
         try {
-            response.addHeader("Content-Disposition", "attachment;filename=${service.getFilename(token)}")
-            service.download(token, response.outputStream)
-        } catch (e: NullPointerException) {
-            throw NotFound(
-                errcode = 111,
-                message = "resource not found"
-            )
+            val (info, buffer) = service.readFile(token)
+            response.addHeader("Content-Disposition", "attachment;filename=${info.filename}")
+            response.addHeader("Content-Length", buffer.size.toString())
+            response.outputStream.write(buffer)
         } catch (e: FileNotFoundException) {
             throw NotFound(
-                errcode = 112,
-                message = "resource not found"
+                errcode = ErrorCodes.Download.file_not_found,
+                message = "resource not found."
+            )
+        }  catch (e: IllegalArgumentException) {
+            throw NotFound(
+                errcode = ErrorCodes.core_info_not_found,
+                message = "resource not found."
             )
         } catch (e: TimeoutException) {
             throw Gone(
-                errcode = 113,
-                message = e.message ?: ""
+                errcode = ErrorCodes.Download.timeout,
+                message = "no further information."
             )
         }
     }

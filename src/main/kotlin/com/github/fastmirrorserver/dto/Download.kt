@@ -9,4 +9,4 @@ data class Download (
     val artifact: String,
     val sha1: String,
     val url: String
-): IResponse
+)

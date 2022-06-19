@@ -23,3 +23,8 @@ create table if not exists t_submit_log (
     "core_version" varchar(31) not null,
     "time" timestamp not null
 );
+create table if not exists t_user (
+    "name" varchar(20) primary key,
+    "authorization_string" varchar(20) not null,
+    "salt" varchar(20) not null unique
+)

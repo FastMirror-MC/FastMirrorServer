@@ -1,7 +1,7 @@
 package com.github.fastmirrorserver.service
 
 import com.github.fastmirrorserver.cores
-import com.github.fastmirrorserver.dto.CoreDetail
+import com.github.fastmirrorserver.dto.CoresDetail
 import com.github.fastmirrorserver.entity.Cores
 import org.ktorm.database.Database
 import org.ktorm.dsl.and
@@ -16,13 +16,13 @@ class HistoryService {
     @Autowired
     protected lateinit var database: Database
 
-    fun query(name: String, version: String, offset: Int, limit: Int) = CoreDetail(
+    fun query(name: String, version: String, offset: Int, limit: Int) = CoresDetail(
         offset = if (offset < 0) 0 else offset,
         limit = if (limit > 25) 25 else if (limit <= 0) 1 else limit,
         builds = database.cores.filter { (Cores.name ilike name) and (Cores.version ilike version) }
             .sortedBy { Cores.update.desc() }
             .drop(offset).take(limit)
-            .map { CoreDetail.ResponseUnit(it) },
+            .map { CoresDetail.ResponseUnit(it) },
         count = database.cores.count { (it.name ilike name) and (it.version ilike version) }
     )
 }
