@@ -51,8 +51,8 @@ fun getTag(): String {
         standardOutput = stdout
     }
     val output = stdout.toString("UTF-8")
-    return if(output[0] == 'v') output.substring(1)
-    else output
+    return (if(output[0] == 'v') output.substring(1)
+    else output).trim()
 }
 fun getCommitId(): String {
     val stdout = ByteArrayOutputStream()
@@ -60,8 +60,11 @@ fun getCommitId(): String {
         commandLine("git", "rev-parse", "--short", "HEAD")
         standardOutput = stdout
     }
-    return stdout.toString("UTF-8")
+    return stdout.toString("UTF-8").trim()
 }
 tasks.bootJar {
-    project.version = "${getTag()}-${getCommitId()}"
+    val ver = "${getTag()}-${getCommitId()}"
+    println(ver)
+    project.version = ver
+    archiveFileName.set("server.jar")
 }
