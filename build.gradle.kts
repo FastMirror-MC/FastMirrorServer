@@ -44,13 +44,24 @@ tasks.test {
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
 }
-
-tasks.bootJar {
+fun getTag(): String {
     val stdout = ByteArrayOutputStream()
     exec {
         commandLine("git", "describe", "--tags")
         standardOutput = stdout
     }
     val output = stdout.toString("UTF-8")
-    project.version = output.substring(1)
+    return if(output[0] == 'v') output.substring(1)
+    else output
+}
+fun getCommitId(): String {
+    val stdout = ByteArrayOutputStream()
+    exec {
+        commandLine("git", "rev-parse", "--short", "HEAD")
+        standardOutput = stdout
+    }
+    return stdout.toString("UTF-8")
+}
+tasks.bootJar {
+    project.version = "${getTag()}-${getCommitId()}"
 }
