@@ -19,5 +19,5 @@ create table if not exists t_account (
     "name" varchar(20) primary key,
     "authorization_string" varchar(255) not null,
     "permission" varchar(20) not null,
-    "last_login" timestamp not null
+    "last_login" timestamp
 );

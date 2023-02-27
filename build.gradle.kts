@@ -1,31 +1,31 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.io.ByteArrayOutputStream
 
 plugins {
-    kotlin("jvm") version "1.6.10"
-    id ("org.jetbrains.kotlin.plugin.spring") version "1.6.10"
+    kotlin("jvm") version "1.8.10"
+    id ("org.jetbrains.kotlin.plugin.spring") version "1.8.10"
     id ("org.springframework.boot") version "2.6.3"
     id ("io.spring.dependency-management") version "1.0.11.RELEASE"
 }
 
 group = "com.github.fastmirrorserver"
-version = "unknown"
+version = "0.0.0"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.10")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.10")
 
-    implementation("org.postgresql:postgresql:42.3.1")
+    implementation("org.postgresql:postgresql:42.3.8")
 
-    implementation("org.springframework.boot:spring-boot-starter-jdbc:2.7.0")
-    implementation("org.springframework.boot:spring-boot-starter:2.7.0")
-    implementation("org.springframework.boot:spring-boot-starter-web:2.7.0")
-    implementation("org.springframework.boot:spring-boot-starter-data-redis:2.7.0")
+    implementation("org.springframework.boot:spring-boot-starter-jdbc:2.7.2")
+    implementation("org.springframework.boot:spring-boot-starter:2.7.2")
+    implementation("org.springframework.boot:spring-boot-starter-web:2.7.2")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis:2.7.2")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.3")
-    implementation("com.auth0:java-jwt:3.19.2")
 
     implementation("org.ktorm:ktorm-core:3.5.0")
     implementation("org.ktorm:ktorm-support-postgresql:3.5.0")
@@ -45,17 +45,12 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
 }
 
-tasks.processResources {
-    val profile = System.getProperty("profile") ?: "pond"
-    filter<org.apache.tools.ant.filters.ReplaceTokens>("tokens" to mapOf("profile" to profile))
-}
-
 tasks.bootJar {
-    val version = System.getProperty("version") ?: "unknown"
-    val suffix = System.getProperty("version_suffix") ?: "release"
-    project.version = "${version}-${suffix}"
-}
-
-tasks.compileJava {
-    inputs.files(tasks.processResources)
+    val stdout = ByteArrayOutputStream()
+    exec {
+        commandLine("git", "describe", "--tags")
+        standardOutput = stdout
+    }
+    val output = stdout.toString("UTF-8")
+    project.version = output.substring(1)
 }

@@ -1,3 +1,3 @@
 
-rootProject.name = "FastMirrorServer"
+rootProject.name = "FastmirrorServer"
 
