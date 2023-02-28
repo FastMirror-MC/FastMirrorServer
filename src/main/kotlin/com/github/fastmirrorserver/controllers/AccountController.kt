@@ -1,7 +1,9 @@
 ﻿package com.github.fastmirrorserver.controllers
 
+import com.github.fastmirrorserver.annotations.Authority
 import com.github.fastmirrorserver.pojos.AccountPOJO
 import com.github.fastmirrorserver.services.AuthorizationService
+import com.github.fastmirrorserver.utils.enums.Permission
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -20,5 +22,6 @@ class AccountController {
     private lateinit var authorization: AuthorizationService
     @PostMapping(REGISTER, consumes= ["application/json"])
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @Authority(Permission.ROOT)
     fun register(@RequestBody pojo: AccountPOJO) = authorization.registerOrUpdate(pojo)
 }

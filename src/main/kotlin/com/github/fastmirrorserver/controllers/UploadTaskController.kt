@@ -1,7 +1,9 @@
 ﻿package com.github.fastmirrorserver.controllers
 
+import com.github.fastmirrorserver.annotations.Authority
 import com.github.fastmirrorserver.dtos.Manifest
 import com.github.fastmirrorserver.services.UploadTaskService
+import com.github.fastmirrorserver.utils.enums.Permission
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -21,10 +23,12 @@ class UploadTaskController {
     }
     
     @PostMapping(CREATE_TASK)
+    @Authority(Permission.COLLECTOR)
     fun createTask(@RequestBody manifest: Manifest)
      = service.createTask(manifest)
     
     @PutMapping(UPLOAD)
+    @Authority(Permission.COLLECTOR)
     fun upload(
         @PathVariable name: String, 
         @PathVariable mc_version: String, 
@@ -33,6 +37,7 @@ class UploadTaskController {
     ) = service.uploadFile(name, mc_version, core_version, request)
 
     @PutMapping(CLOSE_TASK)
+    @Authority(Permission.COLLECTOR)
     fun closeTask(
         @PathVariable name: String,
         @PathVariable mc_version: String,
