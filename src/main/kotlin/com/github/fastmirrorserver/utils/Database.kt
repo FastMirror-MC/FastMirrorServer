@@ -44,20 +44,22 @@ fun EntitySequence<Core, Cores>.querySpecificArtifact(tuple: Metadata)
 fun Database.getAllProject() = sequenceOf(Projects).map { it.toSummary() }
 
 fun Database.getSupportedMcVersionOfProject(name: String) = from(Cores).leftJoin(Projects, on = Projects.name eq Cores.name)
-    .selectDistinct(Cores.name, Cores.mc_version, Projects.url)
+    .selectDistinct(Cores.name, Cores.mc_version, Projects.url, Projects.tag)
     .where { Cores.enable }
     .where { Cores.name eq name }
     .orderBy(Cores.name.asc(), Cores.mc_version.desc())
     .mapNotNull{
         val project = it[Cores.name] ?: return@mapNotNull null
         val homepage = it[Projects.url] ?: return@mapNotNull null
+        val tag = it[Projects.tag] ?: return@mapNotNull null
         val version = it[Cores.mc_version] ?: return@mapNotNull null
-        return@mapNotNull (project to homepage) to version
+        return@mapNotNull Triple(project, tag, homepage) to version
     }.groupBy { it.first }
     .mapValues { entry -> entry.value.map { it.second } }
     .map { mapOf(
                "name" to it.key.first,
-           "homepage" to it.key.second,
+                "tag" to it.key.second,
+           "homepage" to it.key.third,
         "mc_versions" to it.value
     ) }
     .firstOrNull() ?: throw ApiException.ARTIFACT_INFO_NOT_FOUND
