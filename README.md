@@ -1,355 +1,191 @@
 # FastMirrorServer HTTP API文档
 
+# 目录
 <a name="catalog"></a>
 
-# 目录
+| Http request                                                       | Description       |
+|--------------------------------------------------------------------|-------------------|
+| [**GET** /api/v3](/#summary)                                       | 获取支持的服务端列表        |
+| [**GET** /api/v3/{name}](/#project_info)                           | 获取服务端部分信息         |
+| [**GET** /api/v3/{name}/{mc_version}](/#project_mc_version_info)   | 获取获取对应游戏版本的构建版本列表 |
+| [**GET** /api/v3/{name}/{mc_version}/{core_version}](/#metadata)   | 获取指定核心信息          |
+| [**GET** /download/{name}/{mc_version}/{core_version}](/#download) | 下载文件              |
 
-| Class                | Method                                               | Http request                                          | Description                        |
-| -------------------- | ---------------------------------------------------- | ----------------------------------------------------- | ---------------------------------- |
-| *DetailsController*  | [**summary**](/#DetailsController-summary)           | GET** /api/v2                                         | 获取支持的服务端列表               |
-| *DetailsController*  | [**versions**](/#DetailsController-versions)         | GET** /api/v2/all                                     | 获取所有服务端支持的MC版本列表     |
-| *DetailsController*  | [**version**](/#DetailsController-version)           | GET** /api/v2/{name}                                  | 获取服务端支持的游戏版本列表       |
-| *DetailsController*  | [**coreVersions**](/#DetailsController-coreVersions) | GET** /api/v2/{name}/{version}                        | 获取获取对应游戏版本的构建信息列表 |
-| *DetailsController*  | [**artifact**](/#DetailsController-artifact)         | GET** /api/v2/{name}/{version}/{coreVersion}          | 获取指定核心信息                   |
-| *DetailsController*  | [**download**](/#DetailsController-download)         | GET** /api/v2/{name}/{version}/{coreVersion}/download | 获取核心下载所需信息               |
-| *DownloadController* | [**download**](/#DownloadController-download)        | GET** /download                                       | 用于下载文件和获取文件下载链接     |
-| *UtilController*     | [**homepage**](/#UtilController-homepage)            | GET** /{name}/homepage                                | 获取服务端官方主页                 |
+# 请求返回值
+请求的返回值有统一的格式。
 
-# 1. DetailsController
-
-<a name="DetailsController-summary"></a>
-
-## 2.1 **summary**
-
-> 获取支持的服务端列表
-
-### 参数
-
-无
-
-### 返回
-
-样例：
-
-```json
-[
+```json5
+{
+  "data": [                           // 返回的数据
     {
-        "name":"Arclight",
-        "url":"https://github.com/IzzelAliz/Arclight",
-        "tag":"mod",
-        "recommend":true
+        "name": "Arclight",
+        "tag": "mod",
+        "recommend": true
     }
-]
-```
-
-| 参数名    | 参数类型 | 描述                                 |
-| --------- | -------- | ------------------------------------ |
-| name      | String   | 核心的项目名称，也是常用名称         |
-| url       | String   | 项目官方主页(如果有)或GitHub项目地址 |
-| tag       | String   | 核心分类                             |
-| recommend | Boolean  | 推荐标签，为true时会在前端显示星标   |
-
-### 身份认证
-
-无
-
-### HTTP请求头
-
-- Content-Type: Not defined
-- Accept: application/json
-
-<a name="DetailsController-versions"></a>
-
-## 2.2 **versions**
-
-> 获取所有服务端支持的MC版本列表  
-> 该接口为下一个接口的集合
-
-### 参数
-
-无
-
-### 返回
-
-样例：
-
-```json
-{
-    "Arclight":[
-        "1.18",
-        "1.17",
-        "1.16",
-        "1.15"
-    ]
+  ],
+  "code": "fin::success",             // 请求错误码，请求成功时无意义
+                                      // 你也可以通过判断这个码是否为`fin::success`来确定是否成功
+  "success": true,                    // 请求是否成功
+  "message": "Request successfully."  // 错误信息，请求成功时无意义。
 }
 ```
+需要特别注意的是，`.data`的类型不固定，例如部分接口返回的是一个数组，而部分接口返回的是一个对象或别的值。
 
-| 参数名 | 参数类型     | 描述                                                                   |
-| ------ | ------------ | ---------------------------------------------------------------------- |
-| {name} | List[String] | {name}为核心的名称，List为对应的MC版本。该项受采集端提交的数据的影响。 |
+请求失败时，`.data`**一般**都是null。出现内部错误时(http status code == 500)，`.data`会携带错误信息，此时将整个请求(包括请求的url、method等)发送给网站管理员，或直接给本项目开issue。
 
-### 身份认证
+以下的文档中，**返回值**一栏均为`.data`中的内容。
 
-无
+# 请求限额
+普通用户每小时有200次的请求限额;
 
-### HTTP请求头
+注册用户每小时有500次的请求限额.
 
-- Content-Type: Not defined
-- Accept: application/json
+该限额以后可能会进行调整
 
-<a name="DetailsController-version"></a>
+# API
 
-## 2.3 **version**
-
-> 获取指定服务端支持的游戏版本列表
-
+## 1. /api/v3
+<a name="summary"></a>
+获取支持的服务端列表
+### 请求方法
+GET
 ### 参数
+*别问，问就是个patch*
 
-无
+*参数的返回值参考下一个接口*
+
+| position | optional | name    | type  | description      |
+|----------|----------|---------|-------|------------------|
+| query    | true     | project | array | 查询多个服务端支持的游戏版本列表 |
 
 ### 返回
+**Content-Type**: application/json
 
-样例：
-
-```json
+```json5
 [
-    "1.18",
-    "1.17",
-    "1.16",
-    "1.15"
+  {
+    "name": "Arclight",   // 核心的名称
+    "tag": "mod",         // 分类，例如mod\pure\proxy等。
+    "recommend": true     // 是否推荐使用
+  }
+  /*...*/
 ]
 ```
-
-| 参数名 | 参数类型 | 描述                                         |
-| ------ | -------- | -------------------------------------------- |
-| ------ | String   | 对应的MC版本。该项受采集端提交的数据的影响。 |
-
 ### 身份认证
 
 无
 
-### HTTP请求头
-
-- Content-Type: Not defined
-- Accept: application/json
-
-<a name="DetailsController-coreVersions"></a>
-
-## 2.4 **coreVersions**
-
-> 获取获取对应游戏版本的构建信息列表
-
+## 2. /api/v3/{name}
+<a name="project_info"></a>
+获取服务端部分信息
+### 请求方法
+GET
 ### 参数
-
-无
+| position | optional | name | type   | description |
+|----------|----------|------|--------|-------------|
+| path     | false    | name | string | 服务端的名称      |
 
 ### 返回
-
-样例：
-
-```json
+**Content-Type**: application/json
+```json5
 {
-    "builds": [
-        {
-            "name": "Arclight",
-            "version": "1.18",
-            "coreVersion": "build69",
-            "update": "2022-03-11T05:02:36.022997Z"
-        },
-        {
-            "name": "Arclight",
-            "version": "1.18",
-            "coreVersion": "build54",
-            "update": "2022-02-15T05:39:38.747863Z"
-        },
-        {
-            "name": "Arclight",
-            "version": "1.18",
-            "coreVersion": "1.0.0",
-            "update": "2021-12-30T05:49:46Z"
-        }
-    ],
-    "offset": 0,
-    "limit": 25,
-    "count": 3
+  "name": "Arclight",
+  "tag": "mod",
+  "homepage": "https://github.com/IzzelAliz/Arclight",
+  "mc_versions": [
+    "horn", 
+    "GreatHorn", 
+    "1.18", 
+    "1.17", 
+    "1.16", 
+    "1.15"
+  ]
 }
 ```
-
-| 参数名 | 参数类型   | 描述                                         |
-| ------ | ---------- | -------------------------------------------- |
-| builds | List[Item] | 对应的MC版本。该项受采集端提交的数据的影响。 |
-| offset | Integer    | 偏移量，表示从第几个元素开始。用于分页。     |
-| limit  | Integer    | 本次请求期望获取的数据数量。用于分页。       |
-| count  | Integer    | 本次请求实际获取的数据数量。用于分页。       |
-
-**Item**:
-| 参数名 | 参数类型 | 描述 | 
-| ----------- | -------- | ---------------------------------------------------------------- |
-| name | String | 核心的项目名称，也是常用名称。 | 
-| version | String | MC版本。该项受采集端提交的数据的影响。 | 
-| coreVersion | String | 核心版本。若开发团队未提供版本信息，则以`build${构建号}`做版本。 | | update | String | 发布该版本的UTC时间。 |
-
 ### 身份认证
 
 无
 
-### HTTP请求头
-
-- Content-Type: Not defined
-- Accept: application/json
-
-<a name="DetailsController-artifact"></a>
-
-## 2.5 **artifact**
-
-> 获取指定服务端支持的游戏版本列表
-
+## 3. /api/v3/{name}/{mc_version}
+<a name="project_mc_version_info"></a>
+获取获取对应游戏版本的构建版本列表
+### 请求方法
+GET
 ### 参数
-
-无
+| position | optional | name       | type   | description |
+|----------|----------|------------|--------|-------------|
+| path     | false    | name       | string | 服务端的名称      |
+| path     | false    | mc_version | string | mc版本        |
+| query    | true     | offset     | int    | 从第几个开始查询    |
+| query    | true     | count      | int    | 查询的数量       |
 
 ### 返回
-
-样例：
-
-```json
+**Content-Type**: application/json
+```json5
 {
+  "builds": [{
     "name": "Arclight",
-    "version": "1.18",
-    "coreVersion": "build69",
-    "update": "2022-03-11T05:02:36.022997Z"
+    "mc_version": "1.18",     // mc版本
+    "core_version": "1.0.8",  // 核心文件版本
+    "update_time": "2023-02-02T07:50:37", // 更新时间，UTC
+    "sha1": "6922a497d8d3204345d5fe83c04bbec4a6f456b6"  // 文件校验值
+  }],
+  "offset": 0,  // 从第几个开始查询
+  "limit": 1,   // 查询的数量
+  "count": 9    // 总个数
 }
 ```
-
-| 参数名      | 参数类型 | 描述                                                             |
-| ----------- | -------- | ---------------------------------------------------------------- |
-| name        | String   | 核心的项目名称，也是常用名称。                                   |
-| version     | String   | MC版本。该项受采集端提交的数据的影响。                           |
-| coreVersion | String   | 核心版本。若开发团队未提供版本信息，则以`build${构建号}`做版本。 |
-| update      | String   | 发布该版本的UTC时间。                                            |
-
 ### 身份认证
 
 无
 
-### HTTP请求头
-
-- Content-Type: Not defined
-- Accept: application/json
-
-<a name="DetailsController-download"></a>
-
-## 2.6 **download**
-
-> 获取指定服务端支持的游戏版本列表
-
+## 4. /api/v3/{name}/{mc_version}/{core_version}
+<a name="metadata"></a>
+获取指定核心信息
+### 请求方法
+GET
 ### 参数
-
-无
+| position | optional | name         | type   | description |
+|----------|----------|--------------|--------|-------------|
+| path     | false    | name         | string | 服务端的名称      |
+| path     | false    | mc_version   | string | mc版本        |
+| path     | false    | core_version | string | 构建版本        |
 
 ### 返回
-
-样例：
-
-```json
+**Content-Type**: application/json
+```json5
 {
-    "name": "Arclight",
-    "version": "1.18",
-    "coreVersion": "build69",
-    "update": "2022-03-11T05:02:36.022997Z",
-    "artifact": "Arclight-1.18-build69.jar",
-    "sha1": "de2be0e7bb19e545489a3baf9021c2f26357db43",
-    "url": "/download?token=CAD27B0DC11E4E0980B7E8EDA1D97149"
+  "name": "Arclight",
+  "mc_version": "1.18",
+  "core_version": "1.0.8",
+  "update_time": "2023-02-02T07:50:37",
+  "sha1": "6922a497d8d3204345d5fe83c04bbec4a6f456b6",
+  "filename": "Arclight-1.18-1.0.8.jar",
+  "download_url": "http://localhost/download/Arclight/1.18/1.0.8"
 }
 ```
-
-| 参数名      | 参数类型 | 描述                                                             |
-| ----------- | -------- | ---------------------------------------------------------------- |
-| name        | String   | 核心的项目名称，也是常用名称。                                   |
-| version     | String   | MC版本。该项受采集端提交的数据的影响。                           |
-| coreVersion | String   | 核心版本。若开发团队未提供版本信息，则以`build${构建号}`做版本。 |
-| update      | String   | 发布该版本的UTC时间。                                            |
-| artifact    | String   | 文件名。                                                         |
-| sha1        | String   | 文件SHA-1校验值。                                                |
-| url         | String   | 文件下载地址。                                                   |
-
 ### 身份认证
 
 无
 
-### HTTP请求头
+## 5. /download/{name}/{mc_version}/{core_version}
+<a name="download"></a>
+下载文件
 
-- Content-Type: Not defined
-- Accept: application/json
+建议使用 [/api/v3/{name}/{mc_version}/{core_version}](/#metadata)来获取下载地址，而不是手动拼接url。
 
-# 2. DownloadController
-
-<a name="DownloadController-download"></a>
-
-## 2.1 **download**
-
-> 用于下载文件和获取文件下载链接  
-> 具有最简单的防盗链功能  
-> 一般来说不用也不能由客户端直接拼接url，因此该接口的文档仅做参考
-
+### 请求方法
+GET
 ### 参数
-
-| 参数名 | 描述              |
-| ------ | ----------------- |
-| token  | 请求的文件的token |
+| position | optional | name         | type   | description |
+|----------|----------|--------------|--------|-------------|
+| path     | false    | name         | string | 服务端的名称      |
+| path     | false    | mc_version   | string | mc版本        |
+| path     | false    | core_version | string | 构建版本        |
 
 ### 返回
-
-二进制流
-
-### 身份认证
-
-无
-
-### HTTP请求头
-
-- Content-Type: Not defined
-- Accept: application/octet-stream
-
-# 3. UtilController
-
-<a name="UtilController-homepage"></a>
-
-## 3.1 **homepage**
-
-> 获取服务端官方主页  
-> 但是这个功能和`/api/v2`是重合的
-
-### 参数
-
-无
-
-### 返回
-
-样例：
-
-```json
-{
-    "name":"Arclight",
-    "url":"https://github.com/IzzelAliz/Arclight",
-    "tag":"mod",
-    "recommend":true
-}
-```
-
-| 参数名    | 参数类型 | 描述                                 |
-| --------- | -------- | ------------------------------------ |
-| name      | String   | 核心的项目名称，也是常用名称         |
-| url       | String   | 项目官方主页(如果有)或GitHub项目地址 |
-| tag       | String   | 核心分类                             |
-| recommend | Boolean  | 推荐标签，为true时会在前端显示星标   |
+**Content-Type**: application/octet-stream
 
 ### 身份认证
 
 无
-
-### HTTP请求头
-
-- Content-Type: Not defined
-- Accept: application/json
-
