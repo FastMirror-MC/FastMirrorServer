@@ -1,6 +1,6 @@
 ﻿package com.github.fastmirrorserver.exception
 
-import com.github.fastmirrorserver.dtos.ApiResponse
+import com.github.fastmirrorserver.dto.ApiResponse
 import org.springframework.http.HttpStatus
 
 class ApiException(

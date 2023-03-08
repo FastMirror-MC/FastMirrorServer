@@ -1,12 +1,12 @@
 ﻿package com.github.fastmirrorserver.test
 
-import com.github.fastmirrorserver.controllers.AccountController
-import com.github.fastmirrorserver.controllers.TestController
-import com.github.fastmirrorserver.dtos.ApiResponse
+import com.github.fastmirrorserver.controller.AccountController
+import com.github.fastmirrorserver.controller.TestController
+import com.github.fastmirrorserver.dto.ApiResponse
 import com.github.fastmirrorserver.exception.ApiException
-import com.github.fastmirrorserver.pojos.AccountPOJO
-import com.github.fastmirrorserver.utils.*
-import com.github.fastmirrorserver.utils.enums.Permission
+import com.github.fastmirrorserver.pojo.AccountPOJO
+import com.github.fastmirrorserver.util.*
+import com.github.fastmirrorserver.util.enums.Permission
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test

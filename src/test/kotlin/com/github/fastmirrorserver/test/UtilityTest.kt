@@ -1,8 +1,8 @@
 ﻿package com.github.fastmirrorserver.test
 
-import com.github.fastmirrorserver.dtos.Metadata
-import com.github.fastmirrorserver.utils.template
-import com.github.fastmirrorserver.utils.urlTemplate
+import com.github.fastmirrorserver.dto.Metadata
+import com.github.fastmirrorserver.util.template
+import com.github.fastmirrorserver.util.urlTemplate
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.util.Assert

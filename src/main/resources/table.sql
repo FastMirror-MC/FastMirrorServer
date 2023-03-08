@@ -1,11 +1,11 @@
 create table if not exists t_project (
-    "name" varchar(31) primary key,
+    "id" varchar(31) primary key,
     "url" varchar(255) not null,
     "tag" varchar(63) not null,
     "recommend" boolean not null
 );
-create table if not exists t_core (
-    "name" varchar(31) references t_project("name"),
+create table if not exists t_manifest (
+    "name" varchar(31) references t_project("id"),
     "mc_version" varchar(15) not null,
     "core_version" varchar(31) not null,
     "update_time" timestamp not null,
@@ -13,7 +13,7 @@ create table if not exists t_core (
     "filetype" varchar(31) not null,
     "path" varchar(255) not null,
     "enable" boolean not null,
-    constraint t_core_pk primary key ("name", "mc_version", "core_version")
+    constraint t_manifest_pk primary key ("name", "mc_version", "core_version")
 );
 create table if not exists t_account (
     "name" varchar(20) primary key,
