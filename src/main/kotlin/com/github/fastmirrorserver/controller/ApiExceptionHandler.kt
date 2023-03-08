@@ -7,6 +7,7 @@ import com.github.fastmirrorserver.util.uuid
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.util.NestedServletException
 import java.io.File
 import java.io.PrintWriter
 import java.lang.Exception
@@ -23,17 +24,14 @@ class ApiExceptionHandler {
         return e.toResponse()
     }
     
-    @ExceptionHandler(IllegalStateException::class)
-    fun illegalStateExceptionHandler(e: IllegalStateException, request: HttpServletRequest, response: HttpServletResponse): ApiResponse {
-        return if(e.cause is ApiException) serviceExceptionHandler(e.cause as ApiException, request, response)
-        else exceptionHandler(e, request, response)
-    }
-    
     @ExceptionHandler(Exception::class)
     fun exceptionHandler(e: Exception, request: HttpServletRequest, response: HttpServletResponse): ApiResponse {
+        if(e.cause != null && e.cause is ApiException) return serviceExceptionHandler(e.cause as ApiException, request, response)
+        logger.error("uncaught exception: ", e)
         response.status = 500
         val id = uuid().lowercase()
         val file = File("./error-reports/${id}")
+        file.parentFile.mkdirs()
         file.createNewFile()
         if(file.exists()) file.bufferedWriter().use {
             it.write("[${LocalDateTime.now().UTC}] ${e::class.java.canonicalName}: ${e.message}")
