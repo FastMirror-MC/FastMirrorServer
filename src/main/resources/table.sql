@@ -10,7 +10,7 @@ create table if not exists t_manifest (
     "core_version" varchar(31) not null,
     "update_time" timestamp not null,
     "sha1" varchar(127) not null,
-    "filetype" varchar(31) not null,
+    "filename" varchar(127) not null,
     "path" varchar(255) not null,
     "enable" boolean not null,
     constraint t_manifest_pk primary key ("name", "mc_version", "core_version")

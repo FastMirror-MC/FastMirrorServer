@@ -13,7 +13,7 @@ interface Project : Entity<Project> {
 }
 
 object Projects : Table<Project>("t_project") {
-    val id = varchar("name").primaryKey().bindTo { it.id }
+    val id = varchar("id").primaryKey().bindTo { it.id }
     val url = varchar("url").bindTo { it.url }
     val tag = varchar("tag").bindTo { it.tag }
     val recommend = boolean("recommend").bindTo { it.recommend }
