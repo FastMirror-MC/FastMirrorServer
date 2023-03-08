@@ -6,6 +6,9 @@ import com.github.fastmirrorserver.exception.ApiException
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import org.ktorm.entity.*
+import org.ktorm.expression.ArgumentExpression
+import org.ktorm.schema.BooleanSqlType
+import org.ktorm.schema.ColumnDeclaring
 
 fun Project.toSummary() = Summary(this.id, this.tag, this.recommend)
 
@@ -40,13 +43,11 @@ fun EntitySequence<Manifest, Manifests>.querySpecificArtifact(name: String, mc_v
 fun EntitySequence<Manifest, Manifests>.querySpecificArtifact(tuple: Metadata)
         = querySpecificArtifact(tuple.name, tuple.mc_version, tuple.core_version)
 
-
-fun Database.getAllProject() = sequenceOf(Projects).map { it.toSummary() }
-
-fun Database.getSupportedMcVersionOfProject(name: String) = from(Manifests).leftJoin(Projects, on = Projects.id eq Manifests.name)
+private fun Database.queryProjectBy(condition: () -> ColumnDeclaring<Boolean>)
+= from(Manifests).leftJoin(Projects, on = Projects.id eq Manifests.name)
     .selectDistinct(Manifests.name, Manifests.mc_version, Projects.url, Projects.tag)
     .where { Manifests.enable }
-    .where { Manifests.name eq name }
+    .where (condition)
     .orderBy(Manifests.name.asc(), Manifests.mc_version.desc())
     .mapNotNull{
         val project = it[Manifests.name] ?: return@mapNotNull null
@@ -57,11 +58,22 @@ fun Database.getSupportedMcVersionOfProject(name: String) = from(Manifests).left
     }.groupBy { it.first }
     .mapValues { entry -> entry.value.map { it.second } }
     .map { mapOf(
-               "name" to it.key.first,
-                "tag" to it.key.second,
-           "homepage" to it.key.third,
+        "name" to it.key.first,
+        "tag" to it.key.second,
+        "homepage" to it.key.third,
         "mc_versions" to it.value
     ) }
+
+fun Database.getAllProjects() = queryProjectBy { ArgumentExpression(true, BooleanSqlType) }
+
+fun Database.getSupportedMcVersionOfProjects(projects: ArrayList<String>) = queryProjectBy {
+    if(projects.any())
+        projects.map { it eq Manifests.name }.reduce { a, b -> a or b }
+    else
+        ArgumentExpression(false, BooleanSqlType)
+}
+
+fun Database.getSupportedMcVersionOfProject(name: String) = queryProjectBy { Manifests.name eq name }
     .firstOrNull() ?: throw ApiException.ARTIFACT_INFO_NOT_FOUND
 
 fun Database.getAllCoreVersionOfMcVersion(name: String, mc_version: String, offset: Int?, limit: Int?)

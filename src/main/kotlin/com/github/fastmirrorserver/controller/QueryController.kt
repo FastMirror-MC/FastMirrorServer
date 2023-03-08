@@ -27,8 +27,8 @@ class QueryController {
     private lateinit var file_service: FileService
     
     @GetMapping(QUERY_ALL_PROJECT)
-    fun queryAllProject(@RequestParam("project", required = false) projects: ArrayList<String>?)
-            = projects?.map { database.getSupportedMcVersionOfProject(it) } ?: database.getAllProject()
+    fun queryAllProject(@RequestParam("name", required = false) projects: ArrayList<String>?)
+            = projects?.let { database.getSupportedMcVersionOfProjects(it) } ?: database.getAllProjects()
 
     @GetMapping(QUERY_SUPPORTED_MC_VER_OF_PROJECT)
     fun querySupportedMcVersionOfProject(
