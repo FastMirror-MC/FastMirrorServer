@@ -34,7 +34,7 @@ fun Manifest.toResponse() = mapOf<String, Any>(
     ))
 )
 
-object Manifests : Table<Manifest>("t_core") {
+object Manifests : Table<Manifest>("t_manifest") {
     val name = varchar("name").primaryKey().bindTo { it.name }
     val mc_version = varchar("mc_version").primaryKey().bindTo { it.mc_version }
     val core_version = varchar("core_version").primaryKey().bindTo { it.core_version }

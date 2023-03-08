@@ -27,7 +27,6 @@ class AuthorizationService {
     @Autowired
     private lateinit var cache: Cache
     private val regex = Regex("""^(?<username>[A-Za-z0-9_-]{4,32}):(?<password>[^:\\ /]{8,32})$""")
-    
     private fun getAccount(authorization: String): Account {
         val match = regex.find(authorization.b64decode().trim())
             ?: throw ApiException.AUTH_INVALID_FORMAT
