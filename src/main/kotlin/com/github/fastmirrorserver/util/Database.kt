@@ -45,7 +45,7 @@ fun EntitySequence<Manifest, Manifests>.querySpecificArtifact(tuple: Metadata)
 
 private fun Database.queryProjectBy(condition: () -> ColumnDeclaring<Boolean>)
 = from(Manifests).leftJoin(Projects, on = Projects.id eq Manifests.name)
-    .selectDistinct(Manifests.name, Manifests.mc_version, Projects.url, Projects.tag)
+    .selectDistinct(Manifests.name, Manifests.mc_version, Projects.url, Projects.tag, Projects.recommend)
     .where { Manifests.enable }
     .where (condition)
     .orderBy(Manifests.name.asc(), Manifests.mc_version.desc())
@@ -53,14 +53,16 @@ private fun Database.queryProjectBy(condition: () -> ColumnDeclaring<Boolean>)
         val project = it[Manifests.name] ?: return@mapNotNull null
         val homepage = it[Projects.url] ?: return@mapNotNull null
         val tag = it[Projects.tag] ?: return@mapNotNull null
+        val recommend = it[Projects.recommend] ?: return@mapNotNull null
         val version = it[Manifests.mc_version] ?: return@mapNotNull null
-        return@mapNotNull Triple(project, tag, homepage) to version
+        return@mapNotNull Tuple4(project, tag, homepage, recommend) to version
     }.groupBy { it.first }
     .mapValues { entry -> entry.value.map { it.second } }
     .map { mapOf(
-        "name" to it.key.first,
-        "tag" to it.key.second,
-        "homepage" to it.key.third,
+        "name" to it.key.element1,
+        "tag" to it.key.element2,
+        "homepage" to it.key.element3,
+        "recommend" to it.key.element4,
         "mc_versions" to it.value
     ) }
 
