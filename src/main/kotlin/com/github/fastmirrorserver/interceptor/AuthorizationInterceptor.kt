@@ -32,9 +32,11 @@ class AuthorizationInterceptor: HandlerInterceptor {
         val permission = authority.permission
         
         val traceback = authorization.verification(request, response)
-        
-        logger.info("request detected. session=$traceback")
-        logger.info("method=${request.method}, path=${request.requestURI}")
+
+        if(!request.requestURI.startsWith("/api/v3/upload/session/file")){
+            logger.info("request detected. session=$traceback")
+            logger.info("method=${request.method}, path=${request.requestURI}")
+        }
         
         if(!(env == "debug" && traceback.permission == Permission.TESTER && authority.ignore_in_debug)) {
             if (permission == Permission.TESTER && traceback.permission != Permission.TESTER)

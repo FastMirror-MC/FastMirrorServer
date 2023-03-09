@@ -1,6 +1,8 @@
 server:
   tomcat:
     max-http-form-post-size: 100MB
+  error-report:
+    path: "./error-reports"
   forward-headers-strategy: native
 spring:
   profiles:

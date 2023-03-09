@@ -48,13 +48,13 @@ class UploadTaskService {
         val entity = database.all_cores
             .querySpecificArtifact(pojo)
             .firstOrNull()
-                                                    //   有记录  任务列表无  已启用  数据有更新
-        if(entity == null)                          //     否        --        --        --     创建任务
+                                                //   有记录  任务列表无  已启用  数据有更新
+        if(entity == null)                      //     否        --        --        --     创建任务
             insertOrUpdate(pojo)
         else if(tasks.has(pojo))                //     是        否        --        --     抛异常
 //            throw ApiException.CONFLICT_TASK
             tasks.removeTask(pojo)
-        else if(!entity.enable)                     //     是        是        否        --     创建任务
+        else if(!entity.enable)                 //     是        是        否        --     创建任务
             insertOrUpdate(pojo)
         else if(isEquivalent(pojo, entity))     //     是        是        是        否     抛异常
             throw ApiException.UP_TO_DATE

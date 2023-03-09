@@ -23,7 +23,7 @@ class UploadTaskContainer {
             return writer.write(stream, position, length)
         }
         fun nextExpectedRange(maximum: Int = Int.MAX_VALUE) = writer.nextExpectedRange(maximum)
-        fun release() = writer.release()
+        fun release() { if(this::writer.isInitialized) writer.release() }
         fun flush() = writer.flush()
     }
     private val task_pool: TreeMap<String, Task> = TreeMap()

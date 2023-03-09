@@ -44,5 +44,5 @@ data class Traceback(
     }
 
     override fun toString(): String
-    = "Session{user=$user, token=$token, remain_request=$remain_request_count, next_refresh_time=$next_refresh_time}"
+    = "Session{user=$user, token=$token, ip=$remote_address, remain_request=$remain_request_count, next_refresh_time=$next_refresh_time}"
 }
