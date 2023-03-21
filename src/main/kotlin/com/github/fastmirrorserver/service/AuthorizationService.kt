@@ -44,7 +44,7 @@ class AuthorizationService {
 
     /**
      * 验证请求是否合法
-     * 同时检查账号密码(如果有)和session
+     * 同时检查账号密码(如果有)和session.
      */
     fun verification(request: HttpServletRequest, response: HttpServletResponse): Traceback {
         trySetBasicURI(request) { 
