@@ -56,7 +56,7 @@ class AuthorizationService {
         try { request.getAttribute("SESSION_ENTITY")?.let { return it as Traceback } } catch (_: Exception) { }
         val ip = request.remoteAddr
         val account = request.authorization?.let { getAccount(authorization = it) }
-        val cookie = request.cookies?.first { it.name == Traceback.COOKIE_NAME }
+        val cookie = request.cookies?.firstOrNull { it.name == Traceback.COOKIE_NAME }
         val token = cookie?.value
             ?: account?.let { cache.get(it.name, String::class.java) }
             ?: cache.get(ip, String::class.java)
