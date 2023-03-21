@@ -8,12 +8,15 @@ import org.springframework.stereotype.Service
 import java.io.File
 import java.io.PrintWriter
 import java.time.LocalDateTime
+import javax.annotation.PostConstruct
 
 @Service
 class ErrorReportService {
     @Value("\${server.error-report.path}")
     private lateinit var report_root_path: String
-    init {
+    
+    @PostConstruct
+    private fun initialization() {
         File(report_root_path).mkdirs()
     }
     
