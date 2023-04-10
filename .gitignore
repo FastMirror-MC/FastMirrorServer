@@ -45,4 +45,4 @@ target/maven-archiver/pom.properties
 # project
 core/
 tmp/
-crash-report/
+error-reports/
