@@ -12,7 +12,6 @@ import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.entity.firstOrNull
 import org.ktorm.support.postgresql.bulkInsertOrUpdate
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -21,7 +20,6 @@ import javax.servlet.http.HttpServletResponse
 
 @Service
 class AuthorizationService {
-    private val logger = LoggerFactory.getLogger(AuthorizationService::class.java)
     @Autowired
     private lateinit var database: Database
     @Autowired
@@ -47,12 +45,6 @@ class AuthorizationService {
      * 同时检查账号密码(如果有)和session.
      */
     fun verification(request: HttpServletRequest, response: HttpServletResponse): Traceback {
-        trySetBasicURI(request) { 
-            if((scheme == "http" && serverPort == 80) ||(scheme == "https" && serverPort == 443))
-                "$scheme://$serverName"
-            else
-                "$scheme://$serverName:$serverPort"
-        }
         try { request.getAttribute("SESSION_ENTITY")?.let { return it as Traceback } } catch (_: Exception) { }
         val ip = request.remoteAddr
         val account = request.authorization?.let { getAccount(authorization = it) }

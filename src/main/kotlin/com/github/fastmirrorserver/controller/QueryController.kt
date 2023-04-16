@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import javax.servlet.http.HttpServletRequest
 
 @RestController
 class QueryController {
@@ -47,9 +48,10 @@ class QueryController {
     fun querySpecificArtifact(
         @PathVariable name: String,
         @PathVariable core_version: String, 
-        @PathVariable mc_version: String
+        @PathVariable mc_version: String,
+        request: HttpServletRequest
         ) = database.getSpecificArtifact(name, mc_version, core_version)
-        .toResponse()
+        .toResponse(request)
 
     @GetMapping(DOWNLOAD)
     @RawResponse

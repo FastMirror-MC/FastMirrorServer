@@ -24,8 +24,8 @@ class UploadTaskController {
     
     @PostMapping(CREATE_TASK)
     @Authority(Permission.COLLECTOR)
-    fun createTask(@RequestBody manifest: ManifestPOJO)
-     = service.createTask(manifest)
+    fun createTask(@RequestBody manifest: ManifestPOJO, request: HttpServletRequest)
+     = service.createTask(manifest, request)
     
     @PutMapping(UPLOAD)
     @Authority(Permission.COLLECTOR)

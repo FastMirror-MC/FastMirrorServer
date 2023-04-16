@@ -1,10 +1,14 @@
 package com.github.fastmirrorserver.entity
 
 import com.github.fastmirrorserver.controller.QueryController
-import com.github.fastmirrorserver.util.assemblyURI
+import com.github.fastmirrorserver.util.assemblyURL
 import org.ktorm.entity.Entity
-import org.ktorm.schema.*
+import org.ktorm.schema.Table
+import org.ktorm.schema.boolean
+import org.ktorm.schema.datetime
+import org.ktorm.schema.varchar
 import java.time.LocalDateTime
+import javax.servlet.http.HttpServletRequest
 
 interface Manifest : Entity<Manifest> {
     companion object: Entity.Factory<Manifest>()
@@ -19,15 +23,14 @@ interface Manifest : Entity<Manifest> {
     var enable: Boolean
 }
 
-fun Manifest.toResponse() = mapOf<String, Any>(
+fun Manifest.toResponse(request: HttpServletRequest) = mapOf<String, Any>(
     "name" to this.name,
     "mc_version" to this.mc_version,
     "core_version" to this.core_version,
     "update_time" to this.update_time,
     "sha1" to this.sha1,
     "filename" to this.filename,
-    "download_url" to assemblyURI(
-        QueryController.DOWNLOAD, mapOf(
+    "download_url" to request.assemblyURL(QueryController.DOWNLOAD, mapOf(
         "name" to this.name,
         "mc_version" to this.mc_version,
         "core_version" to this.core_version,

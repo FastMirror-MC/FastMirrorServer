@@ -44,7 +44,7 @@ class UploadTaskService {
         = pojo.update_time == manifest.update_time
             && pojo.sha1 == manifest.sha1
     
-    fun createTask(pojo: ManifestPOJO): Map<String, String?> {
+    fun createTask(pojo: ManifestPOJO, request: HttpServletRequest): Map<String, String?> {
         val entity = database.all_cores
             .querySpecificArtifact(pojo)
             .firstOrNull()
@@ -69,7 +69,7 @@ class UploadTaskService {
         }
         else insertOrUpdate(pojo)               //     是        是        是        是     创建任务
         
-        val task = tasks.createTask(pojo, pojo.upload_uri) ?: throw ApiException.CONFLICT_TASK
+        val task = tasks.createTask(pojo, pojo.uploadUrl(request)) ?: throw ApiException.CONFLICT_TASK
         
         return mapOf(
             "upload_uri" to task.uri,

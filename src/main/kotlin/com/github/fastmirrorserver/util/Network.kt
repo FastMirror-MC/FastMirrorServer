@@ -18,9 +18,10 @@ val HttpServletRequest.authorization get() = this
             throw ApiException.AUTH_METHOD_NOT_SUPPORTED
         return@let body
     }
-
-private lateinit var basicURI: String
-fun trySetBasicURI(request: HttpServletRequest, lambda: HttpServletRequest.() -> String) {
-    if(!::basicURI.isInitialized) basicURI = lambda(request)
-}
-fun assemblyURI(path: String, map: Map<String, String>) = "$basicURI$path".template(map)
+val HttpServletRequest.host get() = 
+    if((scheme == "http" && serverPort == 80) ||(scheme == "https" && serverPort == 443))
+        "$scheme://$serverName"
+    else
+        "$scheme://$serverName:$serverPort"
+fun HttpServletRequest.assemblyURL(path: String, map: Map<String, String>)
+= "$host$path".template(map)
